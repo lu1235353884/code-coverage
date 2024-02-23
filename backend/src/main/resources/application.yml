@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    #激活开发环境
+    active: dev
+  messages:
+    basename: i18n/Messages,i18n/Pages
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+logging:
+  config: classpath:log4j2.yml
+swagger:
+  base-package: com.digiwin.code.coverage.backend.controller
+  authorization:
+    type: None
+server:
+  port: 8888
+  servlet:
+    session:
+      timeout: 3600
