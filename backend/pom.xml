@@ -170,6 +170,12 @@
             <systemPath>${project.basedir}/jacocolib/org.jacoco.cli-0.8.7-SNAPSHOT-nodeps.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.13.1</version> <!-- Use the latest version available -->
+        </dependency>
+
     </dependencies>
 
     <build>
