@@ -76,7 +76,7 @@ import CreateForm from './CreateForm'
 
 const columns = [
   {
-    title: '冲刺',
+    title: '应用名',
     dataIndex: 'appCode'
   },
   {
