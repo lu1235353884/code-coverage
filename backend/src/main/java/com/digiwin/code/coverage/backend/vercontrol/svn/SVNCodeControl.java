@@ -1,6 +1,6 @@
 package com.digiwin.code.coverage.backend.vercontrol.svn;
 
-import com.digiwin.code.coverage.backend.dto.CodeInvokeDto;
+import com.digiwin.code.coverage.backend.pojo.dto.CodeInvokeDto;
 import com.digiwin.code.coverage.backend.enums.CodeManageTypeEnum;
 import com.digiwin.code.coverage.backend.vercontrol.AbstractCodeControl;
 

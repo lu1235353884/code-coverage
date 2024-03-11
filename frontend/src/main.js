@@ -32,6 +32,13 @@ Vue.component('page-header-wrapper', PageHeaderWrapper)
 
 window.umi_plugin_ant_themeVar = themePluginConfig.theme
 
+Vue.prototype.$praseStrEmpty = function (str) {
+  if (typeof str === 'undefined' || str === null) {
+      return ''
+  }
+  return str
+}
+
 new Vue({
   router,
   store,

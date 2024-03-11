@@ -129,7 +129,10 @@ const vueConfig = {
       '/api': {
         target: 'http://127.0.0.1:8888',
         ws: false,
-        changeOrigin: true
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
       }
       // '/downLoadFile/file': {
       //   target: 'http://127.0.0.1:8888',

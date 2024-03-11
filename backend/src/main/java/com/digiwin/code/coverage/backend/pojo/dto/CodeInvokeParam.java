@@ -1,4 +1,4 @@
-package com.digiwin.code.coverage.backend.dto;
+package com.digiwin.code.coverage.backend.pojo.dto;
 
 import com.digiwin.code.coverage.backend.enums.CodeManageTypeEnum;
 import lombok.AllArgsConstructor;
@@ -18,13 +18,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CodeInvokeDto {
+public class CodeInvokeParam {
 
     /**
      *
      */
     private String appId;
-
     /**
      * 分支或tag
      */

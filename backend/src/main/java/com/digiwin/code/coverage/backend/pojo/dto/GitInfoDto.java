@@ -1,4 +1,4 @@
-package com.digiwin.code.coverage.backend.dto;
+package com.digiwin.code.coverage.backend.pojo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,9 +4,9 @@ package com.digiwin.code.coverage.backend.vercontrol;
 import cn.hutool.core.io.FileUtil;
 import com.digiwin.code.coverage.backend.common.log.LoggerUtil;
 import com.digiwin.code.coverage.backend.config.CustomizeConfig;
-import com.digiwin.code.coverage.backend.dto.codediff.*;
-import com.digiwin.code.coverage.backend.dto.CodeInvokeDto;
+import com.digiwin.code.coverage.backend.pojo.dto.CodeInvokeDto;
 import com.digiwin.code.coverage.backend.enums.CodeManageTypeEnum;
+import com.digiwin.code.coverage.backend.pojo.dto.codediff.*;
 import com.digiwin.code.coverage.backend.util.MethodParserUtils;
 import com.digiwin.code.coverage.backend.util.XmlDiffUtils;
 import lombok.Data;
@@ -25,8 +25,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
-
-import static com.fasterxml.jackson.databind.util.ClassUtil.getClassMethods;
 
 
 @Data

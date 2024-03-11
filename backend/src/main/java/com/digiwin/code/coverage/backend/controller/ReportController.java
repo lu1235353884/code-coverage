@@ -1,10 +1,10 @@
 package com.digiwin.code.coverage.backend.controller;
 
 import com.digiwin.code.coverage.backend.common.response.ResponseResult;
-import com.digiwin.code.coverage.backend.dto.ReportJacocoParam;
+import com.digiwin.code.coverage.backend.pojo.dto.ReportJacocoParam;
 import com.digiwin.code.coverage.backend.service.ReportService;
 import com.digiwin.code.coverage.backend.util.OrikaMapperUtil;
-import com.digiwin.code.coverage.backend.vo.ReportJacocoParamVO;
+import com.digiwin.code.coverage.backend.pojo.vo.ReportJacocoParamVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

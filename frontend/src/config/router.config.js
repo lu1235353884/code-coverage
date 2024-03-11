@@ -50,18 +50,18 @@ export const asyncRouterMap = [
       //   component: RouteView,
       //   meta: { title: 'menu.form', icon: 'form', permission: ['form'] },
       //   children: [
-      //     {
-      //       path: '/form/base-form',
-      //       name: 'BaseForm',
-      //       component: () => import('@/views/form/basicForm'),
-      //       meta: { title: 'menu.form.basic-form', keepAlive: true, permission: ['form'] }
-      //     },
-      //     {
-      //       path: '/form/step-form',
-      //       name: 'StepForm',
-      //       component: () => import('@/views/form/stepForm/StepForm'),
-      //       meta: { title: 'menu.form.step-form', keepAlive: true, permission: ['form'] }
-      //     },
+      //     // {
+      //     //   path: '/form/base-form',
+      //     //   name: 'BaseForm',
+      //     //   component: () => import('@/views/form/basicForm'),
+      //     //   meta: { title: 'menu.form.basic-form', keepAlive: true, permission: ['form'] }
+      //     // },
+      //     // {
+      //     //   path: '/form/step-form',
+      //     //   name: 'StepForm',
+      //     //   component: () => import('@/views/form/stepForm/StepForm'),
+      //     //   meta: { title: 'menu.form.step-form', keepAlive: true, permission: ['form'] }
+      //     // },
       //     {
       //       path: '/form/advanced-form',
       //       name: 'AdvanceForm',
@@ -93,7 +93,15 @@ export const asyncRouterMap = [
                 meta: { title: 'menu.code-coverage.list', permission: ['table'] }
               }
               ]
-          }]
+          }
+        ]
+      },
+      {
+        path: '/sprints',
+        name: 'sprints',
+        hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+        component: () => import('@/views/sprint/sprint'),
+        meta: { title: 'menu.sprint', keepAlive: true, permission: ['table'] }
       },
       // list
       {

@@ -35,9 +35,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @CreateDate 2024-03-02 21:01
  **/
 
-@Api(value = "/api",tags = "api测试")
+@Api(value = "/",tags = "api测试")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/")
 @Validated
 public class APIController {
 

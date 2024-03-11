@@ -5,7 +5,7 @@ import com.digiwin.code.coverage.backend.common.exception.BaseException;
 import com.digiwin.code.coverage.backend.common.log.LoggerUtil;
 import com.digiwin.code.coverage.backend.common.response.ResultCode;
 import com.digiwin.code.coverage.backend.config.CustomizeConfig;
-import com.digiwin.code.coverage.backend.dto.ReportJacocoParam;
+import com.digiwin.code.coverage.backend.pojo.dto.ReportJacocoParam;
 import com.digiwin.code.coverage.backend.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.jacoco.cli.internal.core.analysis.Analyzer;

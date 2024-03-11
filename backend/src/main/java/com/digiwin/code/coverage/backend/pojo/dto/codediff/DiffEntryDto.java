@@ -1,6 +1,5 @@
-package com.digiwin.code.coverage.backend.dto.codediff;
+package com.digiwin.code.coverage.backend.pojo.dto.codediff;
 
-import com.digiwin.code.coverage.backend.dto.codediff.ChangeLine;
 import lombok.Data;
 import org.eclipse.jgit.diff.DiffEntry;
 

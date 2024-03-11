@@ -14,6 +14,7 @@ export default {
     'menu.form.advanced-form': 'Advanced Form',
     'menu.code-coverage': 'Code Coverage',
     'menu.code-coverage.list': 'APP/BM List',
+    'menu.sprint': 'Sprint',
     'menu.list': 'List',
     'menu.list.table-list': 'Search Table',
     'menu.list.basic-list': 'Basic List',

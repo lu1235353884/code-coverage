@@ -1,6 +1,5 @@
-package com.digiwin.code.coverage.backend.vo;
+package com.digiwin.code.coverage.backend.pojo.dto;
 
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.util.List;
@@ -16,16 +15,33 @@ import java.util.List;
  * Copyright: Copyright (c) 2023
  */
 @Data
-@ApiModel
-public class ReportJacocoParamVO {
+public class ReportJacocoParam {
 
-
+    /**
+     * 类目录
+     */
+    private List<String> classesDirectory;
+    /**
+     * 源码目录
+     */
+    private List<String> sourceDirectory;
     /**
      * exec文件目录
      * 0
      */
     private List<String> executionDataFile;
 
+
+    /**
+     * 排除类目录
+     */
+    private String excludedClassesDirectory;
+
+    /**
+     * 0
+     * 报告生成目录
+     */
+    private String reportDirectory;
 
 
     /**
@@ -34,9 +50,13 @@ public class ReportJacocoParamVO {
     private String diffCodeFile;
 
 
+    /**
+     * 报告名称
+     */
+    private String reportName;
 
     /**
-     * appid
+     * 应用ID
      */
     private String appId;
 

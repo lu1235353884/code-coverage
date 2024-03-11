@@ -2,11 +2,11 @@ package com.digiwin.code.coverage.backend.service.impl;
 
 import com.digiwin.code.coverage.backend.common.response.ResponseResult;
 import com.digiwin.code.coverage.backend.constant.CodeCoverageConstant;
-import com.digiwin.code.coverage.backend.dto.codediff.CodeDiffDto;
-import com.digiwin.code.coverage.backend.dto.codediff.CodeDiffParam;
-import com.digiwin.code.coverage.backend.dto.CodeInvokeDto;
-import com.digiwin.code.coverage.backend.dto.CodeInvokeParam;
-import com.digiwin.code.coverage.backend.dto.codediff.DiffInfo;
+import com.digiwin.code.coverage.backend.pojo.dto.codediff.CodeDiffDto;
+import com.digiwin.code.coverage.backend.pojo.dto.codediff.CodeDiffParam;
+import com.digiwin.code.coverage.backend.pojo.dto.CodeInvokeDto;
+import com.digiwin.code.coverage.backend.pojo.dto.CodeInvokeParam;
+import com.digiwin.code.coverage.backend.pojo.dto.codediff.DiffInfo;
 import com.digiwin.code.coverage.backend.enums.CodeManageTypeEnum;
 import com.digiwin.code.coverage.backend.service.CodeService;
 import com.digiwin.code.coverage.backend.service.MavenCmdInvokeService;

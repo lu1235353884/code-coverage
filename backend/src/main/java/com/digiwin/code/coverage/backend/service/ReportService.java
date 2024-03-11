@@ -1,6 +1,6 @@
 package com.digiwin.code.coverage.backend.service;
 
-import com.digiwin.code.coverage.backend.dto.ReportJacocoParam;
+import com.digiwin.code.coverage.backend.pojo.dto.ReportJacocoParam;
 
 public interface ReportService {
 

@@ -1,4 +1,4 @@
-package com.digiwin.code.coverage.backend.dto.codediff;
+package com.digiwin.code.coverage.backend.pojo.dto.codediff;
 
 import lombok.Builder;
 import lombok.Data;

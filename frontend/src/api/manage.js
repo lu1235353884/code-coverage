@@ -6,7 +6,11 @@ const api = {
   service: '/service',
   permission: '/permission',
   permissionNoPager: '/permission/no-pager',
-  orgTree: '/org/tree'
+  orgTree: '/org/tree',
+  sprint: '/sprint/sprint',
+  sprintrels: '/sprint/sprint/rels',
+  sprintlist: '/sprint/sprintlist',
+  applist: '/app/applist'
 }
 
 export default api
@@ -66,5 +70,48 @@ export function saveSub (sub) {
     url: '/sub',
     method: sub.id === 0 ? 'post' : 'put',
     data: sub
+  })
+}
+
+export function getOneSprint (parameter) {
+  return request({
+    url: api.sprint + '?sprintid=8',
+    method: 'get'
+  })
+}
+
+export function getSprintRels (parameter) {
+  return request({
+    url: api.sprintrels + '?sprintid=' + parameter.sprintid + '&size=' + parameter.pageSize + '&page=' + parameter.pageNo,
+    method: 'get'
+  })
+}
+
+export function getSprintList (parameter) {
+  return request({
+    url: api.sprintlist + '?sprintcode=' + parameter.sprintcode + '&size=' + parameter.pageSize + '&page=' + parameter.pageNo,
+    method: 'get'
+  })
+}
+
+export function saveSprint (sprint) {
+  return request({
+    url: api.sprint,
+    method: sprint.id ? 'put' : 'post',
+    data: sprint
+  })
+}
+
+export function deleteSprint (sprintcode) {
+  return request({
+    url: api.sprint + '?ids=' + sprintcode,
+    method: 'delete'
+  })
+}
+
+export function getApplist (parameter) {
+  return request({
+    url: api.applist + '?appcode=' + parameter.appcode + '&size=' + parameter.pageSize + '&page=' + parameter.pageNo,
+    method: 'get'
   })
 }

@@ -5,7 +5,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.digiwin.code.coverage.backend.common.exception.BaseException;
 import com.digiwin.code.coverage.backend.common.log.LoggerUtil;
 import com.digiwin.code.coverage.backend.common.response.ResultCode;
-import com.digiwin.code.coverage.backend.dto.codediff.MethodInfoResult;
+import com.digiwin.code.coverage.backend.pojo.dto.codediff.MethodInfoResult;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.Range;
 import com.github.javaparser.ast.CompilationUnit;

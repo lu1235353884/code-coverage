@@ -3,7 +3,7 @@ package com.digiwin.code.coverage.backend.util;
 
 
 import com.digiwin.code.coverage.backend.common.log.LoggerUtil;
-import com.digiwin.code.coverage.backend.dto.codediff.MethodInfoResult;
+import com.digiwin.code.coverage.backend.pojo.dto.codediff.MethodInfoResult;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;

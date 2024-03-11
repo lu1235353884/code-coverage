@@ -1,4 +1,4 @@
-package com.digiwin.code.coverage.backend.vo;
+package com.digiwin.code.coverage.backend.pojo.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
