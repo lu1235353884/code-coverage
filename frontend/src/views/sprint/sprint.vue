@@ -6,12 +6,12 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="冲刺">
-                <a-input v-model="queryParam.sprintcode" placeholder=""/>
+                <a-input v-model="code" placeholder=""/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
               <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-              <a-button style="margin-left: 8px" @click="() => this.queryParam = {}">重置</a-button>
+              <a-button style="margin-left: 8px" @click="() => this.code = null">重置</a-button>
             </a-col>
           </a-row>
         </a-form>
@@ -113,11 +113,12 @@ export default {
       sprintcode: null,
       isCompared: null,
       // 查询参数
-      queryParam: {},
+      code: null,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        this.queryParam.sprintcode = this.$praseStrEmpty(this.queryParam.sprintcode)
-        const requestParameters = Object.assign({}, parameter, this.queryParam)
+        this.code = this.$praseStrEmpty(this.code)
+        const queryParam = { 'sprintcode': this.code }
+        const requestParameters = Object.assign({}, parameter, queryParam)
         return getSprintList(requestParameters)
           .then(res => {
             return res.result

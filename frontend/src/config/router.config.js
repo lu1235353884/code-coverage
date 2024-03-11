@@ -166,7 +166,7 @@ export const asyncRouterMap = [
       //       ]
       //     }
       //   ]
-      // },
+      // }
 
       // profile
       // {
