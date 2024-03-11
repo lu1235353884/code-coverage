@@ -10,7 +10,8 @@ const api = {
   sprint: '/sprint/sprint',
   sprintrels: '/sprint/sprint/rels',
   sprintlist: '/sprint/sprintlist',
-  applist: '/app/applist'
+  applist: '/app/applist',
+  app: '/app/app'
 }
 
 export default api
@@ -113,5 +114,20 @@ export function getApplist (parameter) {
   return request({
     url: api.applist + '?appcode=' + parameter.appcode + '&size=' + parameter.pageSize + '&page=' + parameter.pageNo,
     method: 'get'
+  })
+}
+
+export function saveApp (app) {
+  return request({
+    url: api.app,
+    method: app.id ? 'put' : 'post',
+    data: app
+  })
+}
+
+export function deleteApp (id) {
+  return request({
+    url: api.app + '?ids=' + id,
+    method: 'delete'
   })
 }

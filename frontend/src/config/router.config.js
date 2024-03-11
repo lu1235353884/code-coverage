@@ -103,6 +103,13 @@ export const asyncRouterMap = [
         hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
         component: () => import('@/views/sprint/sprint'),
         meta: { title: 'menu.sprint', keepAlive: true, permission: ['table'] }
+      },
+      {
+        path: '/apps',
+        name: 'apps',
+        hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+        component: () => import('@/views/apps/app'),
+        meta: { title: 'menu.app', keepAlive: true, permission: ['table'] }
       }
       // list
       // {

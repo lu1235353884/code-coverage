@@ -15,6 +15,7 @@ export default {
     'menu.code-coverage': '代码覆盖',
     'menu.code-coverage.list': '应用/业务中台列表',
     'menu.sprint': '冲刺',
+    'menu.app': '应用',
     'menu.list': '列表页',
     'menu.list.table-list': '查询表格',
     'menu.list.basic-list': '标准列表',

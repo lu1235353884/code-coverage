@@ -15,6 +15,7 @@ export default {
     'menu.code-coverage': 'Code Coverage',
     'menu.code-coverage.list': 'APP/BM List',
     'menu.sprint': 'Sprint',
+    'menu.app': 'Application',
     'menu.list': 'List',
     'menu.list.table-list': 'Search Table',
     'menu.list.basic-list': 'Basic List',

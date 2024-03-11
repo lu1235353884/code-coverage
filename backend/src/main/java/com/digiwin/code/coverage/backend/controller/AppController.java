@@ -91,14 +91,14 @@ public class AppController {
     @ApiOperation("删除应用")
     @RequestMapping(value = "app", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResponseResult deleteApp(@RequestParam(value = "appcode", required = true) List<String> appCodes){
-        if(CollectionUtils.isEmpty(appCodes)){
-            return ResponseResult.fail("入参appcodes不可为空");
+    public ResponseResult deleteApp(@RequestParam(value = "ids", required = true) List<String> ids){
+        if(CollectionUtils.isEmpty(ids)){
+            return ResponseResult.fail("入参ids不可为空");
         }
         QueryWrapper<AppPO> conds = new QueryWrapper<>();
         conds.lambda().and( wq -> {
-            for(String appCode : appCodes){
-                wq.or().eq(AppPO::getAppCode, appCode);
+            for(String id : ids){
+                wq.or().eq(AppPO::getId, id);
             }
         });
         return ResponseResult.ok(appMapper.delete(conds));

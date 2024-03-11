@@ -85,7 +85,7 @@ public class SprintController {
         if(sprintPO == null){
             return ResponseResult.fail("入参不可为空");
         }
-        List<SprintAppRelPO> rels = sprintPO.getRelPOS();
+//        List<SprintAppRelPO> rels = sprintPO.getRelPOS();
         sprintMapper.insert(sprintPO);
         sprintAppRelMapper.insertAllApps(sprintPO.getId(), sprintPO.getSprintCode());
 //        if(CollectionUtils.isNotEmpty(rels)){
@@ -160,7 +160,7 @@ public class SprintController {
         QueryWrapper<SprintAppRelPO> relConds = new QueryWrapper<>();
         relConds.lambda().and( wq -> {
             for(String id : ids){
-                wq.or().eq(SprintAppRelPO::getSprintCode, id);
+                wq.or().eq(SprintAppRelPO::getSprintId, id);
             }
         });
         sprintAppRelMapper.delete(relConds);
@@ -180,9 +180,10 @@ public class SprintController {
             QueryWrapper<SprintAppRelPO> conds = new QueryWrapper<>();
             conds.lambda().eq(SprintAppRelPO::getSprintId, sprintPO.getId());
             sprintAppRelMapper.delete(conds);
-            for(SprintAppRelPO rel : rels){
-                sprintAppRelMapper.insert(SprintAppRelPO.createRelPO(rel, sprintPO));
-            }
+//            for(SprintAppRelPO rel : rels){
+//                sprintAppRelMapper.insert(SprintAppRelPO.createRelPO(rel, sprintPO));
+//            }
+            sprintAppRelMapper.insertAllApps(sprintPO.getId(), sprintPO.getSprintCode());
         }
         return ResponseResult.ok();
     }
