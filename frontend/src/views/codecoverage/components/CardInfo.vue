@@ -1,10 +1,6 @@
 <template>
   <div class="cardInfo">
     <div>
-      <p>当前状态</p>
-      <p>{{ activeUser }}</p>
-    </div>
-    <div>
       <p>全量代码覆盖率</p>
       <p>{{ newUser }}</p>
     </div>

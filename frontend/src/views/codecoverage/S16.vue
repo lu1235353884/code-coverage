@@ -28,14 +28,14 @@
                 <a-avatar size="small" :src="item.avatar" />
               </template>
             </a-card-meta>
-            <template slot="actions">
-              <a-tooltip title="查看报告">
+            <template slot="actions" >
+              <a-tooltip title="查看执行详情" @click="showDetail">
                 <a-icon type="select" />
               </a-tooltip>
-              <a-tooltip title="编辑对比分支">
+              <a-tooltip title="编辑对比分支" @click="edit">
                 <a-icon type="edit" />
               </a-tooltip>
-              <a-tooltip title="重新生成报告">
+              <a-tooltip title="重新生成报告" @click="handleChange">
                 <a-icon type="reload" />
               </a-tooltip>
               <a-dropdown>
@@ -69,6 +69,10 @@
 import moment from 'moment'
 import { TagSelect, StandardFormRow, Ellipsis, AvatarList } from '@/components'
 import CardInfo from './components/CardInfo'
+import { Modal } from 'ant-design-vue'
+// import TaskForm from '@/views/list/modules/TaskForm.vue'
+import BranchInfo from './components/BranchInfo.vue'
+import StepDetail from './components/StepDetail.vue'
 const TagSelectOption = TagSelect.Option
 const AvatarListItem = AvatarList.Item
 
@@ -100,6 +104,71 @@ export default {
   methods: {
     handleChange (value) {
       console.log(`selected ${value}`)
+
+      Modal.confirm({
+        title: this.$t('请确认是否重新计算覆盖率'),
+        content: this.$t('请确认是否重新计算覆盖率'),
+        onOk: () => {
+          // return new Promise((resolve, reject) => {
+          //   setTimeout(Math.random() > 0.5 ? resolve : reject, 1500)
+          // }).catch(() => console.log('Oops errors!'))
+          // return this.$store.dispatch('Logout').then(() => {
+          //   this.$router.push({ name: 'login' })
+          // })
+        },
+        onCancel () {}
+      })
+    },
+    showDetail (appId) {
+      this.$dialog(StepDetail,
+          // component props
+          {
+            appId,
+            on: {
+              ok () {
+                console.log('ok 回调')
+              },
+              cancel () {
+                console.log('cancel 回调')
+              },
+              close () {
+                console.log('modal close 回调')
+              }
+            }
+          },
+          // modal props
+          {
+            title: '操作',
+            width: 700,
+            centered: true,
+            maskClosable: false
+          })
+    },
+    edit (record) {
+      console.log('record', record)
+      this.$dialog(BranchInfo,
+          // component props
+          {
+            record,
+            on: {
+              ok () {
+                console.log('ok 回调')
+              },
+              cancel () {
+                console.log('cancel 回调')
+              },
+              close () {
+                console.log('modal close 回调')
+              }
+            }
+          },
+          // modal props
+          {
+            title: '操作',
+            width: 700,
+            centered: true,
+            maskClosable: false
+          })
     },
     getList () {
       // this.$http.get('/downLoadFile/file', { params: { appId: 'BM-OPSC' } }).then(res => {
