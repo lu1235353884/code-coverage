@@ -20,7 +20,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ProjectName: code-coverage
@@ -49,8 +52,15 @@ public class CodeController {
                                                    @NotEmpty
                                                    @RequestParam(value = "appId") String appId){
 
-
-        return ResponseResult.ok(codeService.getRemoteBranchs(appId.toLowerCase()));
+        ResponseResult res = codeService.getRemoteBranchs(appId.toLowerCase());
+        List<String> ls = (List<String>)res.getResult();
+        List<Map<String, String>> rtn = new ArrayList<>();
+        for(String s : ls){
+            Map<String, String> map = new HashMap<>();
+            map.put("branch", s);
+            rtn.add(map);
+        }
+        return ResponseResult.ok(rtn);
     }
 
     @ApiOperation("下载代码并编译")

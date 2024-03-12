@@ -31,6 +31,15 @@
             </a-alert>
           </a-col>
         </a-row>
+        <a-row>
+          <a-col>
+            <a-alert showIcon="true">
+              <template slot="message">
+                <span style="margin-right: 12px">同一时间只可有一个冲刺进行比对，若选择比对，则旧冲刺的比对状态会置为false</span>
+              </template>
+            </a-alert>
+          </a-col>
+        </a-row>
         <!-- <a-row>
           <a-col>
             <a-button type="primary" @click="handleAdd">选择应用</a-button>

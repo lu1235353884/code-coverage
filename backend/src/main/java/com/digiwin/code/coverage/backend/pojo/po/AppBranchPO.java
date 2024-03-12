@@ -16,6 +16,8 @@ public class AppBranchPO {
   private Long id;
   private Long relId;
   private String appCode;
+  private String compareType;
+  private String status;
   private String sourceBranchName;
   private String targetBranchName;
   private String allFilePath;

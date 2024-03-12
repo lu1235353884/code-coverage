@@ -61,7 +61,7 @@ public class CodeServiceImpl implements CodeService {
      * @param appId
      * @return
      */
-    public ResponseResult   getRemoteBranchs(String appId){
+    public ResponseResult getRemoteBranchs(String appId){
 
         return ResponseResult.ok(CodeControlHandlerFactory.getCodeControl(CodeManageTypeEnum.GIT).getRemoteBranchs(appId));
     }

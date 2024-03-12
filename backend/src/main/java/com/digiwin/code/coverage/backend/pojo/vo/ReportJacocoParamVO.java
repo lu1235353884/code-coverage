@@ -40,4 +40,6 @@ public class ReportJacocoParamVO {
      */
     private String appId;
 
+    private String sourceBranchName;
+
 }

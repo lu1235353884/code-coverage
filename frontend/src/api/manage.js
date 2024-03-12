@@ -10,8 +10,12 @@ const api = {
   sprint: '/sprint/sprint',
   sprintrels: '/sprint/sprint/rels',
   sprintlist: '/sprint/sprintlist',
+  comparesprint: '/sprint/compare/sprint',
   applist: '/app/applist',
-  app: '/app/app'
+  app: '/app/app',
+  branchlist: '/code/branchList',
+  appbranch: '/sprint/appbranch',
+  task: '/task/task'
 }
 
 export default api
@@ -81,9 +85,9 @@ export function getOneSprint (parameter) {
   })
 }
 
-export function getSprintRels (parameter) {
+export function getSprintRels (sprintid) {
   return request({
-    url: api.sprintrels + '?sprintid=' + parameter.sprintid + '&size=' + parameter.pageSize + '&page=' + parameter.pageNo,
+    url: api.sprintrels + '?sprintid=' + sprintid,
     method: 'get'
   })
 }
@@ -129,5 +133,45 @@ export function deleteApp (id) {
   return request({
     url: api.app + '?ids=' + id,
     method: 'delete'
+  })
+}
+
+export function getCompareSprint () {
+  return request({
+    url: api.comparesprint,
+    method: 'get'
+  })
+}
+
+export function getBranchlist (appid) {
+  return request({
+    url: api.branchlist + '?appId=' + appid,
+    method: 'get'
+  })
+}
+
+export function getAppBranch (relid, appcode) {
+  return request({
+    url: api.appbranch + '?relid=' + relid + '&appcode=' + appcode,
+    method: 'get'
+  })
+}
+
+export function saveAppBranch (parameter) {
+  return request({
+    url: api.appbranch,
+    method: parameter.id === 0 ? 'post' : 'put',
+    data: parameter
+  })
+}
+
+export function excuteTask (id, relid, appcode) {
+  let url = api.task + '?appcode=' + appcode + '&relid=' + relid
+  if (id) {
+    url = url + '&id=' + id
+  }
+  return request({
+    url: url,
+    method: 'get'
   })
 }

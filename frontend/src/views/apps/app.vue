@@ -131,10 +131,8 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         this.code = this.$praseStrEmpty(this.code)
-        console.log(this.code)
         const queryParam = { 'appcode': this.code }
         const requestParameters = Object.assign({}, parameter, queryParam)
-        console.log(requestParameters)
         return getApplist(requestParameters)
           .then(res => {
             return res.result

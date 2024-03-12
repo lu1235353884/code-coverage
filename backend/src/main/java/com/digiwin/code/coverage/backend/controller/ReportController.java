@@ -38,6 +38,6 @@ public class ReportController {
         ReportJacocoParam reportJacocoParam = OrikaMapperUtil.map(reportJacocoParamVO, ReportJacocoParam.class);
         reportJacocoParam.setAppId(reportJacocoParam.getAppId().toLowerCase());
         reportService.reportJacoco(reportJacocoParam);
-        return  ResponseResult.ok();
+        return  ResponseResult.ok(reportJacocoParam.getReportDirectory());
     }
 }

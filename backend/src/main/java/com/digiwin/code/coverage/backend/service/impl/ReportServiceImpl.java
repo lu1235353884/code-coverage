@@ -7,6 +7,7 @@ import com.digiwin.code.coverage.backend.common.response.ResultCode;
 import com.digiwin.code.coverage.backend.config.CustomizeConfig;
 import com.digiwin.code.coverage.backend.pojo.dto.ReportJacocoParam;
 import com.digiwin.code.coverage.backend.service.ReportService;
+import com.digiwin.code.coverage.backend.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jacoco.cli.internal.core.analysis.Analyzer;
 import org.jacoco.cli.internal.core.analysis.CoverageBuilder;
@@ -49,9 +50,15 @@ public class ReportServiceImpl implements ReportService {
         reportJacocoParam.setClassesDirectory(new ArrayList<String>());
         reportJacocoParam.setSourceDirectory(new ArrayList<String>());
         //根据是否有diff的入参来确认全量报告还是增量报告
-        reportJacocoParam.setReportDirectory(customizeConfig.getReportDir()+"/"+reportJacocoParam.getAppId()+(StringUtils.isEmpty(reportJacocoParam.getDiffCodeFile())?"":"-diff"));
+        String reportPath = customizeConfig.getReportDir()+"/"+reportJacocoParam.getAppId()+(StringUtils.isEmpty(reportJacocoParam.getDiffCodeFile())?"":"-diff");
+        try {
+            FileUtils.restFileMkdirs(reportPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        reportJacocoParam.setReportDirectory(reportPath);
         reportJacocoParam.setReportName(reportJacocoParam.getAppId());
-        String appPath = customizeConfig.getGitLocalBaseRepoDir()+"/"+reportJacocoParam.getAppId()+"_backend/develop/develop/module/";
+        String appPath = customizeConfig.getGitLocalBaseRepoDir()+"/"+reportJacocoParam.getAppId()+"_backend/"+reportJacocoParam.getSourceBranchName()+"/develop/module/";
 
         try{
             Stream<Path> stream = Files.walk(Paths.get(appPath), 1);

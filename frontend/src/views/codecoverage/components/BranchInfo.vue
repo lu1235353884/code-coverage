@@ -5,9 +5,10 @@
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
     >
-      <a-select>
-        <a-select-option :value="0">develop</a-select-option>
-        <a-select-option :value="1">release1.0</a-select-option>
+      <a-select :loading="loading" v-model="sourceBranch">
+        <a-select-option v-for="item of sourceList" :value="item.branch" :key="item.branch">{{ item.branch }}</a-select-option>
+        <!-- <a-select-option :value="0">develop</a-select-option>
+        <a-select-option :value="1">release1.0</a-select-option> -->
       </a-select>
     </a-form-item>
     <a-form-item
@@ -15,18 +16,15 @@
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
     >
-      <a-select>
-        <a-select-option :value="0">develop</a-select-option>
-        <a-select-option :value="1">release2.0</a-select-option>
+      <a-select :loading="loading" v-model="targetBranch">
+        <a-select-option v-for="item of targetList" :value="item.branch" :key="item.branch">{{ item.branch }}</a-select-option>
       </a-select>
     </a-form-item>
   </a-form>
 </template>
 
 <script>
-import pick from 'lodash.pick'
-
-const fields = ['title', 'startAt', 'owner', 'description']
+import { getBranchlist, getAppBranch, saveAppBranch } from '@/api/manage'
 
 export default {
   name: 'BranchInfo',
@@ -46,21 +44,57 @@ export default {
         xs: { span: 24 },
         sm: { span: 13 }
       },
-      form: this.$form.createForm(this)
+      sourceList: [],
+      targetList: [],
+      id: 0,
+      relid: this.record.id,
+      appcode: this.record.appCode,
+      sourceBranch: '',
+      targetBranch: '',
+      form: this.$form.createForm(this),
+      loading: false
     }
   },
   mounted () {
-    this.record && this.form.setFieldsValue(pick(this.record, fields))
+    this.loading = true
+    if (this.relid && this.appcode) {
+      getAppBranch(this.relid, this.appcode).then(res => {
+        const rtn = res.result
+        if (rtn) {
+          this.id = rtn.id
+          this.targetBranch = rtn.targetBranchName
+          this.sourceBranch = rtn.sourceBranchName
+        }
+      })
+    }
+    getBranchlist(this.appcode).then(res => {
+      this.loading = false
+      const list = res.result
+      this.targetList = Object.assign([], list)
+      this.sourceList = Object.assign([], list)
+    })
+    // this.record && this.form.setFieldsValue(pick(this.record, fields))
   },
   methods: {
     onOk () {
-      console.log('监听了 modal ok 事件')
-      return new Promise(resolve => {
-        resolve(true)
+      if (!this.sourceBranch || !this.targetBranch) {
+        this.$message.error('请选择分支')
+        return
+      }
+      const param = {
+        id: this.id,
+        relId: this.relid,
+        appCode: this.appcode,
+        compareType: 'branch',
+        sourceBranchName: this.sourceBranch,
+        targetBranchName: this.targetBranch
+      }
+      saveAppBranch(param).then(res => {
+        this.$message.info('保存成功')
+        this._provided.dialogContext.close()
       })
     },
     onCancel () {
-      console.log('监听了 modal cancel 事件')
       return new Promise(resolve => {
         resolve(true)
       })

@@ -60,4 +60,6 @@ public class ReportJacocoParam {
      */
     private String appId;
 
+    private String sourceBranchName;
+
 }

@@ -1,6 +1,13 @@
 <template>
   <div>
     <a-card :bordered="false" class="ant-pro-components-tag-select">
+      <a-alert showIcon="true">
+        <template slot="message">
+          <span style="margin-right: 12px">当前冲刺为{{ sprintCode }}</span>
+        </template>
+      </a-alert>
+    </a-card>
+    <a-card :bordered="false" class="ant-pro-components-tag-select">
       <a-form :form="form" layout="inline">
         <standard-form-row title="区域选择" block style="padding-bottom: 11px;">
           <a-form-item>
@@ -19,23 +26,22 @@
         :loading="loading"
         :data-source="data"
         :grid="{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }"
-        style="margin-top: 24px;"
-      >
+        style="margin-top: 24px;">
         <a-list-item slot="renderItem" slot-scope="item">
           <a-card :body-style="{ paddingBottom: 20 }" hoverable>
-            <a-card-meta :title="item.title">
+            <a-card-meta :title="item.appCode">
               <template slot="avatar">
-                <a-avatar size="small" :src="item.avatar" />
+                <a-avatar size="small" src="https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png" />
               </template>
             </a-card-meta>
-            <template slot="actions" >
-              <a-tooltip title="查看执行详情" @click="showDetail">
+            <template slot="actions">
+              <a-tooltip title="查看执行详情" @click="showDetail(item)">
                 <a-icon type="select" />
               </a-tooltip>
-              <a-tooltip title="编辑对比分支" @click="edit">
+              <a-tooltip title="编辑对比分支" @click="edit(item)">
                 <a-icon type="edit" />
               </a-tooltip>
-              <a-tooltip title="重新生成报告" @click="handleChange">
+              <a-tooltip title="重新生成报告" @click="handleChange(item)">
                 <a-icon type="reload" />
               </a-tooltip>
               <a-dropdown>
@@ -73,6 +79,8 @@ import { Modal } from 'ant-design-vue'
 // import TaskForm from '@/views/list/modules/TaskForm.vue'
 import BranchInfo from './components/BranchInfo.vue'
 import StepDetail from './components/StepDetail.vue'
+import { getCompareSprint, getSprintRels, getAppBranch, excuteTask } from '@/api/manage'
+
 const TagSelectOption = TagSelect.Option
 const AvatarListItem = AvatarList.Item
 
@@ -89,6 +97,8 @@ export default {
   data () {
     return {
       data: [],
+      sprintCode: '',
+      sprintId: null,
       form: this.$form.createForm(this),
       loading: true
     }
@@ -98,77 +108,96 @@ export default {
       return moment(date).fromNow()
     }
   },
+  created () {
+
+  },
   mounted () {
-    this.getList()
+    getCompareSprint().then(res => {
+      this.sprintCode = res.result.sprintCode
+      this.sprintId = res.result.id
+      this.getList()
+    })
   },
   methods: {
-    handleChange (value) {
-      console.log(`selected ${value}`)
+    handleChange (record) {
+      const relid = record.id
+      const appcode = record.appCode
 
+      getAppBranch(relid, appcode).then(res => {
+        const rtn = res.result
+        // 无回参或回参不含ID或回参的compareTpye为all
+        if (!rtn || (rtn && !rtn.id) || (rtn && rtn.compareTpye === 'all')) {
+          var that = this
+          this.$confirm({
+              title: '警告',
+              content: '当前项目未配置分支信息，只能执行全量比对，是否执行？',
+              okText: '确定',
+              okType: 'danger',
+              cancelText: '取消',
+              onOk () {
+                that.exceteTask(null, relid, appcode)
+              },
+              onCancel () {
+                console.log('Cancel')
+              }
+            })
+        } else {
+          this.exceteTask(rtn.id, relid, appcode)
+        }
+      })
+    },
+    exceteTask (id, relid, appcode) {
+      var that = this
       Modal.confirm({
         title: this.$t('请确认是否重新计算覆盖率'),
         content: this.$t('请确认是否重新计算覆盖率'),
         onOk: () => {
-          // return new Promise((resolve, reject) => {
-          //   setTimeout(Math.random() > 0.5 ? resolve : reject, 1500)
-          // }).catch(() => console.log('Oops errors!'))
-          // return this.$store.dispatch('Logout').then(() => {
-          //   this.$router.push({ name: 'login' })
-          // })
+          excuteTask(id, relid, appcode).then(res => {
+            that.$message.info('任务开始执行，请稍后查看执行进度')
+          })
         },
-        onCancel () {}
+        onCancel () { }
       })
     },
-    showDetail (appId) {
+    showDetail (record) {
       this.$dialog(StepDetail,
-          // component props
-          {
-            appId,
-            on: {
-              ok () {
-                console.log('ok 回调')
-              },
-              cancel () {
-                console.log('cancel 回调')
-              },
-              close () {
-                console.log('modal close 回调')
-              }
+        // component props
+        {
+          record: record,
+          on: {
+            ok () {
+              console.log('ok 回调')
+            },
+            cancel () {
+              console.log('cancel 回调')
+            },
+            close () {
+              console.log('modal close 回调')
             }
-          },
-          // modal props
-          {
-            title: '操作',
-            width: 700,
-            centered: true,
-            maskClosable: false
-          })
+          }
+        },
+        // modal props
+        {
+          title: '操作',
+          width: 900,
+          centered: true,
+          maskClosable: false
+        })
     },
     edit (record) {
-      console.log('record', record)
       this.$dialog(BranchInfo,
-          // component props
-          {
-            record,
-            on: {
-              ok () {
-                console.log('ok 回调')
-              },
-              cancel () {
-                console.log('cancel 回调')
-              },
-              close () {
-                console.log('modal close 回调')
-              }
-            }
-          },
-          // modal props
-          {
-            title: '操作',
-            width: 700,
-            centered: true,
-            maskClosable: false
-          })
+        // component props
+        {
+          record: record
+        },
+        // modal props
+        {
+          title: '操作',
+          width: 700,
+          centered: true,
+          maskClosable: false
+        }
+      )
     },
     getList () {
       // this.$http.get('/downLoadFile/file', { params: { appId: 'BM-OPSC' } }).then(res => {
@@ -176,11 +205,18 @@ export default {
       //   this.data = res.result
       //   this.loading = false
       // })
-      this.$http.get('/list/article', { params: { count: 8 } }).then(res => {
-        console.log('res', res)
+      // this.$http.get('/list/article', { params: { count: 8 } }).then(res => {
+      //   console.log('res', res)
+      //   this.data = res.result
+      //   this.loading = false
+      // })
+      getSprintRels(this.sprintId).then(res => {
         this.data = res.result
         this.loading = false
       })
+    },
+    closeDialog () {
+      this.$dialog.close()
     }
   }
 }
@@ -194,6 +230,7 @@ export default {
     font-size: 14px;
   }
 }
+
 .ant-pro-pages-list-projects-cardList {
   margin-top: 24px;
 
@@ -214,7 +251,7 @@ export default {
     margin-bottom: -4px;
     line-height: 20px;
 
-    > span {
+    >span {
       flex: 1 1;
       color: rgba(0, 0, 0, 0.45);
       font-size: 12px;

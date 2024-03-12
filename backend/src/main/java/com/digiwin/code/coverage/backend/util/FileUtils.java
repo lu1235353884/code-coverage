@@ -152,4 +152,29 @@ public class FileUtils {
         return null;
     }
 
+    /**
+     * 重置文件夹
+     * @param filePath
+     * @author: xiarui
+     * @date: 2024/3/12 11:59
+     */
+    public static void restFileMkdirs(String filePath) throws IOException {
+        File f = new File(filePath);
+        if(f.exists()){
+            Path dir = Paths.get(filePath);
+            // 遍历文件夹中的所有文件和子文件夹，并删除所有文件
+            Files.walk(dir)
+                    .filter(Files::isRegularFile)
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }else {
+            f.mkdirs();
+        }
+    }
+
 }
