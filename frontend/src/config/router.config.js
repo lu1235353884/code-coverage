@@ -79,30 +79,38 @@ export const asyncRouterMap = [
         redirect: '/codecoverage/listReport',
         meta: { title: 'menu.code-coverage', icon: 'table', permission: ['table'] },
         children: [
-          // {
-          //   path: '/codecoverage/listReport',
-          //   name: 'listReport',
-          //   hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
-          //   component: () => import('@/views/codecoverage/MainPage.vue'),
-          //   redirect: '/codecoverage/listReport/S16',
-          //   meta: { title: 'menu.code-coverage.list', keepAlive: true, permission: ['table'] },
-          //   children: [
-          //     {
-          //       path: '/codecoverage/listReport/S16',
-          //       name: 'S16',
-          //       component: () => import('@/views/codecoverage/sprint.vue'),
-          //       meta: { title: 'menu.code-coverage.list', permission: ['table'] }
-          //     }
-          //     ]
-          // }
           {
-            path: '/codecoverage/listReport/S16',
-            name: 'S16',
+            path: '/codecoverage/listReport',
+            name: 'listReport',
+            hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
             component: () => import('@/views/codecoverage/sprint.vue'),
-            meta: { title: 'menu.code-coverage.list', permission: ['table'] }
+            // redirect: '/codecoverage/listReport/S16',
+            meta: { title: 'menu.code-coverage.list', keepAlive: true, permission: ['table'] }
+            // children: [
+            //   {
+            //     path: '/codecoverage/listReport/S16',
+            //     name: 'S16',
+            //     component: () => import('@/views/codecoverage/sprint.vue'),
+            //     meta: { title: 'menu.code-coverage.list', permission: ['table'] }
+            //   }
+            //   ]
           }
+          // {
+          //   path: '/codecoverage/listReport/S16',
+          //   name: 'S16',
+          //   hideChildrenInMenu: true,
+          //   component: () => import('@/views/codecoverage/sprint.vue'),
+          //   meta: { title: 'menu.code-coverage.list', permission: ['table'] }
+          // }
         ]
       },
+      // {
+      //   path: '/codecoverage/listReport/S16',
+      //   name: 'S16',
+      //   hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+      //   component: () => import('@/views/codecoverage/sprint.vue'),
+      //   meta: { title: 'menu.sprint', keepAlive: true, permission: ['table'] }
+      // },
       {
         path: '/sprints',
         name: 'sprints',
