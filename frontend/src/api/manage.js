@@ -15,7 +15,8 @@ const api = {
   app: '/app/app',
   branchlist: '/code/branchList',
   appbranch: '/sprint/appbranch',
-  task: '/task/task'
+  task: '/task/task',
+  alltask: '/task/alltask'
 }
 
 export default api
@@ -169,13 +170,20 @@ export function saveAppBranch (parameter) {
   })
 }
 
-export function excuteTask (id, relid, appcode) {
-  let url = api.task + '?appcode=' + appcode + '&relid=' + relid
+export function excuteTask (id, sprintId, relid, appcode) {
+  let url = api.task + '?appcode=' + appcode + '&relid=' + relid + '&sprintId=' + sprintId
   if (id) {
     url = url + '&id=' + id
   }
   return request({
     url: url,
     method: 'get'
+  })
+}
+
+export function excuteAllTask (sprintId) {
+  return request({
+    url: api.alltask + '?sprintId=' + sprintId,
+    method: 'POST'
   })
 }

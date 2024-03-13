@@ -15,6 +15,7 @@ public class AppBranchPO {
   @TableId(type = IdType.AUTO)
   private Long id;
   private Long relId;
+  private Long sprintId;
   private String appCode;
   private String compareType;
   private String status;
@@ -28,6 +29,7 @@ public class AppBranchPO {
   private String diffCount;
   private Date downloadBranchDate;
   private Date downloadDataFileDate;
+  private String dataFilePath;
   private Date compileDate;
   private Date compareDate;
   

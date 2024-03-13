@@ -4,7 +4,9 @@ import com.digiwin.code.coverage.backend.common.log.LoggerUtil;
 import com.digiwin.code.coverage.backend.common.response.ResponseResult;
 import com.digiwin.code.coverage.backend.config.CustomizeConfig;
 import com.digiwin.code.coverage.backend.mapper.AppBranchMapper;
+import com.digiwin.code.coverage.backend.mapper.SprintAppRelMapper;
 import com.digiwin.code.coverage.backend.pojo.po.AppBranchPO;
+import com.digiwin.code.coverage.backend.pojo.po.SprintAppRelPO;
 import com.digiwin.code.coverage.backend.pojo.vo.ReportJacocoParamVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +17,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.Executor;
 
@@ -38,6 +43,9 @@ public class TaskController {
     private AppBranchMapper appBranchMapper;
 
     @Autowired
+    private SprintAppRelMapper sprintAppRelMapper;
+
+    @Autowired
     private DownLoadFileController downLoadFileController;
 
     @Autowired
@@ -53,45 +61,74 @@ public class TaskController {
     private CustomizeConfig customizeConfig;
 
     @ApiOperation("执行任务")
+    @RequestMapping(value = "alltask", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult excuteAllTask(@RequestParam(value = "sprintId", required = true) Long sprintId){
+        List<Map<String, Object>> ls = sprintAppRelMapper.getListBySprintId2(sprintId);
+        for(Map<String, Object> map : ls){
+            Long id = (Long)map.get("id");
+            Long relId = (Long)map.get("rel_id");
+            String appcode = (String)map.get("app_code");
+            excuteTask(id, relId, sprintId, appcode);
+        }
+        return ResponseResult.ok();
+    }
+
+    @ApiOperation("执行任务")
     @RequestMapping(value = "task", method = RequestMethod.GET)
     @ResponseBody
     public ResponseResult excuteTask(@RequestParam(value = "id", required = false) Long id,
                                      @RequestParam(value = "relid", required = true) Long relid,
+                                     @RequestParam(value = "sprintId", required = true) Long sprintId,
                                      @RequestParam(value = "appcode", required = true) String appcode){
+        AppBranchPO poT = null;
+        Date downDataFileDate = null;
+        if(id == null){
+            poT = new AppBranchPO();
+            poT.setRelId(relid);
+            poT.setSprintId(sprintId);
+            poT.setCompareType("all");
+            poT.setAppCode(appcode);
+            poT.setStatus("2");
+            appBranchMapper.insert(poT);
+            id = poT.getId();
+        }else {
+            AppBranchPO po = appBranchMapper.selectById(id);
+            downDataFileDate = po.getDownloadDataFileDate();
+            appBranchMapper.resetInfo(id);
+        }
+        final Long idT = id;
+        final Date downDataFileDateT = downDataFileDate;
         executor.execute(() -> {
-            AppBranchPO po = null;
-            if(id == null){
-                po = new AppBranchPO();
-                po.setRelId(relid);
-                po.setCompareType("all");
-                po.setAppCode(appcode);
-                po.setStatus("2");
-                appBranchMapper.insert(po);
-            }else {
-                po = appBranchMapper.selectById(id);
-                po.setStatus("2");
-                po.setAllFilePath(null);
-                po.setAllFileDate(null);
-                po.setAllCount(null);
-                po.setDiffFilePath(null);
-                po.setDiffFileDate(null);
-                po.setDiffCount(null);
-                po.setDownloadBranchDate(null);
-                po.setDownloadDataFileDate(null);
-                po.setCompileDate(null);
-                po.setCompareDate(null);
-                appBranchMapper.resetInfo(id);
-            }
+            // 此处需要获取下载文件
+            AppBranchPO po = appBranchMapper.selectById(idT);
+
+            SprintAppRelPO relPo = sprintAppRelMapper.selectById(relid);
             try {
-                LoggerUtil.info(log, String.format("应用%s，下载exec文件，开始", appcode));
-                // 下载文件
-                ResponseResult downRes = downLoadFileController.downLoadCodeAndCompile(appcode);
+                boolean isWithinTwoHours = false;
+                if(downDataFileDateT != null){
+                    LocalDateTime curTime = LocalDateTime.now();
+                    Instant targetTime = downDataFileDateT.toInstant();
+                    LocalDateTime targetLocalTime = LocalDateTime.ofInstant(targetTime, ZoneId.systemDefault());
+                    isWithinTwoHours = curTime.isBefore(targetLocalTime.plusHours(2));
+                }
 
-                po.setDownloadDataFileDate(new Date());
-                appBranchMapper.updateById(po);
+                String filePath = po.getDataFilePath();
+                if(!isWithinTwoHours){
+                    appBranchMapper.resetDataFileDate(idT);
+                    LoggerUtil.info(log, String.format("应用%s，下载exec文件，开始", appcode));
+                    // 下载文件
+                    ResponseResult downRes = downLoadFileController.downLoadCodeAndCompile(appcode, relPo.getSprintCode());
 
-                String filePath = Objects.toString(downRes.getMessage(), "");
-                LoggerUtil.info(log, String.format("应用%s，下载exec文件，保存路径为%s，结束", appcode, filePath));
+                    filePath = Objects.toString(downRes.getMessage(), "");
+                    po.setDataFilePath(filePath);
+                    po.setDownloadDataFileDate(new Date());
+                    appBranchMapper.updateById(po);
+
+                    LoggerUtil.info(log, String.format("应用%s，下载exec文件，保存路径为%s，结束", appcode, filePath));
+                }else {
+                    LoggerUtil.info(log, String.format("应用%s，下载exec文件在两小时内，无需重新下载", appcode));
+                }
 
                 ReportJacocoParamVO reportJacocoParamVO = new ReportJacocoParamVO();
                 downLoadCodeAndCompile(reportJacocoParamVO, po, appcode);

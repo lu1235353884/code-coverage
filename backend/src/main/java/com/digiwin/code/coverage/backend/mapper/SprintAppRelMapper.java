@@ -20,9 +20,9 @@ public interface SprintAppRelMapper extends MPJBaseMapper<SprintAppRelPO> {
                       @Param("sprintcode")String sprintcode);
 
     @Select({"<script>",
-            "select T1.*, T2.compare_type, T2.all_count, T2.all_file_path, T2.diff_count, T2.diff_file_path " +
+            "select T1.*, T2.compare_type, T2.all_count, T2.all_file_path, T2.all_file_date, T2.diff_count, T2.diff_file_path, T2.diff_file_date " +
             "from sprint_app_rel AS T1 " +
-            "         inner join app_branch AS T2 ON T1.id = T2.rel_id and T1.app_code = T2.app_code " +
+            "         left join app_branch AS T2 ON T1.id = T2.rel_id and T1.app_code = T2.app_code " +
             "where T1.sprint_id = #{sprintid} "+
             "<when test='type != null'>"+
             "and T1.app_owner = #{type} "+
@@ -30,4 +30,10 @@ public interface SprintAppRelMapper extends MPJBaseMapper<SprintAppRelPO> {
             " order by T1.app_code",
             "</script>"})
     List<Map<String, Object>> getListBySprintId(@Param("sprintid")Long sprintid, @Param("type")String type);
+
+    @Select("select T2.id, T1.id AS rel_id, T1.sprint_id, T1.app_code " +
+            "from sprint_app_rel AS T1 " +
+            "         left join app_branch AS T2 ON T1.id = T2.rel_id and T1.app_code = T2.app_code " +
+            "where T1.sprint_id = #{sprintid}")
+    List<Map<String, Object>> getListBySprintId2(@Param("sprintid")Long sprintid);
 }

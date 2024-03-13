@@ -10,13 +10,16 @@
     <a-card :bordered="false" class="ant-pro-components-tag-select">
       <a-form layout="inline">
         <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
+          <a-col :md="5" :sm="5">
             <a-form-item label="应用名">
               <a-input v-model="code" placeholder=""/>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="2" :sm="5">
             <a-button type="primary" @click="search">查询</a-button>
+          </a-col>
+          <a-col :md="2" :sm="5">
+            <a-button type="primary" @click="handle">全部执行</a-button>
           </a-col>
         </a-row>
       </a-form>
@@ -69,8 +72,10 @@
                 :compareType="item.compareType"
                 :allcount="item.allCount"
                 :allfilepath="item.allFilePath"
+                :allfiledate="item.allFileDate"
                 :diffcount="item.diffCount"
-                :difffilepath="item.diffFilePath"></card-info>
+                :difffilepath="item.diffFilePath"
+                :difffiledate="item.diffFileDate"></card-info>
             </div>
           </a-card>
         </a-list-item>
@@ -87,7 +92,7 @@ import { Modal } from 'ant-design-vue'
 // import TaskForm from '@/views/list/modules/TaskForm.vue'
 import BranchInfo from './components/BranchInfo.vue'
 import StepDetail from './components/StepDetail.vue'
-import { getCompareSprint, getSprintRels, getAppBranch, excuteTask } from '@/api/manage'
+import { getCompareSprint, getSprintRels, getAppBranch, excuteTask, excuteAllTask } from '@/api/manage'
 
 const TagSelectOption = TagSelect.Option
 const AvatarListItem = AvatarList.Item
@@ -107,9 +112,9 @@ export default {
       data: [],
       oriData: [],
       sprintCode: '',
-      sprintId: null,
+      sprintId: '',
       form: this.$form.createForm(this),
-      loading: true,
+      loading: false,
       type: '',
       code: ''
     }
@@ -124,14 +129,17 @@ export default {
   },
   mounted () {
     getCompareSprint().then(res => {
-      this.sprintCode = res.result.sprintCode
-      this.sprintId = res.result.id
-      this.getList()
+      if (res.result) {
+        this.sprintCode = res.result.sprintCode
+        this.sprintId = res.result.id
+        this.getList()
+      }
     })
   },
   methods: {
     handleChange (record) {
       const relid = record.id
+      const sprintId = record.sprintId
       const appcode = record.appCode
 
       getAppBranch(relid, appcode).then(res => {
@@ -146,24 +154,31 @@ export default {
               okType: 'danger',
               cancelText: '取消',
               onOk () {
-                that.exceteTask(null, relid, appcode)
+                // that.exceteTask(null, sprintId, relid, appcode)
+                excuteTask(null, sprintId, relid, appcode).then(res => {
+                  that.$message.info('任务开始执行，请稍后查看执行进度')
+                })
               },
               onCancel () {
                 console.log('Cancel')
               }
             })
         } else {
-          this.exceteTask(rtn.id, relid, appcode)
+          if (rtn.status === '2') {
+            this.$message.info('当前应用正在执行中，请稍等')
+          } else {
+            this.exceteTask(rtn.id, sprintId, relid, appcode)
+          }
         }
       })
     },
-    exceteTask (id, relid, appcode) {
+    exceteTask (id, sprintId, relid, appcode) {
       var that = this
       Modal.confirm({
         title: this.$t('请确认是否重新计算覆盖率'),
         content: this.$t('请确认是否重新计算覆盖率'),
         onOk: () => {
-          excuteTask(id, relid, appcode).then(res => {
+          excuteTask(id, sprintId, relid, appcode).then(res => {
             that.$message.info('任务开始执行，请稍后查看执行进度')
           })
         },
@@ -171,6 +186,7 @@ export default {
       })
     },
     showDetail (record) {
+      console.log(record)
       var that = this
       this.$dialog(StepDetail,
         // component props
@@ -216,6 +232,8 @@ export default {
       //   this.data = res.result
       //   this.loading = false
       // })
+      this.data = []
+      this.loading = true
       getSprintRels(this.sprintId).then(res => {
         this.oriData = res.result
         this.data = res.result
@@ -238,6 +256,16 @@ export default {
       } else {
         this.getList()
       }
+    },
+    handle () {
+      var that = this
+      excuteAllTask(this.sprintId).then(res => {
+        if (res && res.success) {
+          that.$message.info('任务已进入执行队列，请等待')
+        } else {
+          that.$message.error('任务执行失败')
+        }
+      })
     }
   }
 }

@@ -47,6 +47,7 @@ export default {
       sourceList: [],
       targetList: [],
       id: 0,
+      sprintId: this.record.sprintId,
       relid: this.record.id,
       appcode: this.record.appCode,
       sourceBranch: '',
@@ -83,6 +84,7 @@ export default {
       }
       const param = {
         id: this.id,
+        sprintId: this.sprintId,
         relId: this.relid,
         appCode: this.appcode,
         compareType: 'branch',

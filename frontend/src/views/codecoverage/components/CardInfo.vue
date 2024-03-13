@@ -10,25 +10,33 @@
     </div>
   </div> -->
   <a-form>
-    <a-row>
+    <a-row style="margin-top: 0px;">
       <a-col :md="16" :sm="16"></a-col>
       <!-- <a-col :md="6" :sm="6">{{ allcount }}</a-col> -->
     </a-row>
-    <a-row style="margin-top: 8px;">
-      <a-col :md="18" :sm="18">全量代码覆盖率</a-col>
-      <a-col :md="6" :sm="6">
-        <p>
+    <a-row style="margin-top: 8px;margin-bottom: 1px;">
+      <a-col :md="10" :sm="10">全量代码覆盖率</a-col>
+      <a-col :md="4" :sm="4">
+        <p v-if="allfilepath">
           <a :href="allfilepath" target="_blank">{{ allCount }}</a>
         </p>
-      </a-col>
-    </a-row>
-    <a-row style="margin-bottom: 0px;" v-if="compareType && compareType==='branch'">
-      <a-col :md="18" :sm="18">增量代码覆盖率</a-col>
-      <a-col :md="6" :sm="6">
-        <p>
-          <a :href="difffilepath" target="_blank">{{ diffCount }}</a>
+        <p v-if="!allfilepath">
+          {{ allCount }}
         </p>
       </a-col>
+      <a-col :md="10" :sm="10">{{ allFileDate }}</a-col>
+    </a-row>
+    <a-row style="margin-bottom: 0px;" v-if="compareType && compareType==='branch'">
+      <a-col :md="10" :sm="10">增量代码覆盖率</a-col>
+      <a-col :md="4" :sm="4">
+        <p v-if="difffilepath">
+          <a :href="difffilepath" target="_blank">{{ diffCount }}</a>
+        </p>
+        <p v-if="!difffilepath">
+          {{ diffCount }}
+        </p>
+      </a-col>
+      <a-col :md="10" :sm="10">{{ diffFileDate }}</a-col>
     </a-row>
   </a-form>
 </template>
@@ -57,6 +65,10 @@ export default {
       type: String,
       default: ''
     },
+    allfiledate: {
+      type: Object,
+      default: null
+    },
     diffcount: {
       type: String,
       default: ''
@@ -64,14 +76,20 @@ export default {
     difffilepath: {
       type: String,
       default: ''
+    },
+    difffiledate: {
+      type: String,
+      default: null
     }
   },
   data () {
     return {
       allCount: this.allcount,
       allFilePath: this.allfilepath,
+      allFileDate: this.allfiledate,
       diffCount: this.diffcount,
-      diffFilePath: this.difffilepath
+      diffFilePath: this.difffilepath,
+      diffFileDate: this.difffiledate
     }
   },
   mounted () {

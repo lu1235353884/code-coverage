@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -25,9 +26,13 @@ public class SprintAppRelPO {
     @TableField(exist = false)
     private String allFilePath;
     @TableField(exist = false)
+    private Date allFileDate;
+    @TableField(exist = false)
     private String diffCount;
     @TableField(exist = false)
     private String diffFilePath;
+    @TableField(exist = false)
+    private Date diffFileDate;
     @TableField(exist = false)
     private String compareType;
 

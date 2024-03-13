@@ -40,13 +40,14 @@ public class DownLoadFileController {
     @ResponseBody
     public ResponseResult downLoadCodeAndCompile(@ApiParam(required = true, name = "appId", value = "appId")
                                                      @NotEmpty
-                                                     @RequestParam(value = "appId")String appId){
+                                                     @RequestParam(value = "appId")String appId,
+                                                 @RequestParam(value = "sprintCode")String sprintCode){
         String appIdDownload = appId.toLowerCase().replace("-","");
         String basePath = customizeConfig.getDownLoadPath() + "\\" + appId;
         String filePath = "";
         try {
             FileUtils.restFileMkdirs(basePath);
-            FileUtils.downloadFile(MessageFormat.format(customizeConfig.getDownLoadUrl(),new String[]{appIdDownload,appIdDownload}), basePath);
+            FileUtils.downloadFile(MessageFormat.format(customizeConfig.getDownLoadUrl(),new String[]{appIdDownload, sprintCode, appIdDownload}), basePath);
             FileUtils.unzip(basePath+CodeCoverageConstant.TEMPFILE_NAME, basePath);
             File fm = new File(basePath);
             if(fm.exists()){

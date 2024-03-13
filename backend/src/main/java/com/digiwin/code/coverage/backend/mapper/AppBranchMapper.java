@@ -15,7 +15,6 @@ public interface AppBranchMapper extends BaseMapper<AppBranchPO> {
             "    diff_file_path=null, " +
             "    diff_file_date=null, " +
             "    download_branch_date=null, " +
-            "    download_data_file_date=null, " +
             "    compile_date=null, " +
             "    compare_date=null, " +
             "    status='2', " +
@@ -24,4 +23,8 @@ public interface AppBranchMapper extends BaseMapper<AppBranchPO> {
             "where id = #{id} ")
     int resetInfo(@Param("id")Long id);
 
+    @Update("update app_branch " +
+            "set download_data_file_date=null " +
+            "where id = #{id} ")
+    int resetDataFileDate(@Param("id")Long id);
 }

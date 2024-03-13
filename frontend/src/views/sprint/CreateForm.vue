@@ -17,7 +17,7 @@
             </a-form-item>
           </a-col>
           <a-col :md="16" :sm="16">
-            <a-form-item label="是否执行比对">
+            <a-form-item label="是否生效">
               <a-checkbox v-model="isCompare"/>
             </a-form-item>
           </a-col>
@@ -35,7 +35,7 @@
           <a-col>
             <a-alert showIcon="true">
               <template slot="message">
-                <span style="margin-right: 12px">同一时间只可有一个冲刺进行比对，若选择比对，则旧冲刺的比对状态会置为false</span>
+                <span style="margin-right: 12px">同一时间只可有一个冲刺生效，若当前冲刺生效，则其他冲刺均会自动失效</span>
               </template>
             </a-alert>
           </a-col>

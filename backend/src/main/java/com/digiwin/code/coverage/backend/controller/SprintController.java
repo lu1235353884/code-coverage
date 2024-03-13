@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.digiwin.code.coverage.backend.common.response.ResponseResult;
 import com.digiwin.code.coverage.backend.mapper.AppBranchMapper;
+import com.digiwin.code.coverage.backend.mapper.AppMapper;
 import com.digiwin.code.coverage.backend.mapper.SprintAppRelMapper;
 import com.digiwin.code.coverage.backend.mapper.SprintMapper;
 import com.digiwin.code.coverage.backend.pojo.po.AppBranchPO;
+import com.digiwin.code.coverage.backend.pojo.po.AppPO;
 import com.digiwin.code.coverage.backend.pojo.po.SprintAppRelPO;
 import com.digiwin.code.coverage.backend.pojo.po.SprintPO;
 import io.swagger.annotations.Api;
@@ -18,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 冲刺管理页面
@@ -36,6 +36,9 @@ public class SprintController {
 
     @Autowired
     private SprintMapper sprintMapper;
+
+    @Autowired
+    private AppMapper appMapper;
 
     @Autowired
     private SprintAppRelMapper sprintAppRelMapper;
@@ -87,7 +90,7 @@ public class SprintController {
             return ResponseResult.fail("入参不可为空");
         }
         Long isCompare = sprintPO.getIsCompare();
-        if(isCompare!=null && isCompare.equals(1)){
+        if(isCompare!=null && isCompare.equals(1L)){
             sprintMapper.updateCompare();
         }
         sprintMapper.insert(sprintPO);
@@ -129,8 +132,10 @@ public class SprintController {
                 po.setAppCode((String)map.get("app_code"));
                 po.setAllCount((String)map.get("all_count"));
                 po.setAllFilePath((String)map.get("all_file_path"));
+                po.setAllFileDate((Date)map.get("all_file_date"));
                 po.setDiffCount((String)map.get("diff_count"));
                 po.setDiffFilePath((String)map.get("diff_file_path"));
+                po.setDiffFileDate((Date)map.get("diff_file_date"));
                 po.setCompareType((String)map.get("compare_type"));
                 rtn.add(po);
             }
@@ -159,6 +164,15 @@ public class SprintController {
             }
         });
         sprintAppRelMapper.delete(relConds);
+
+        QueryWrapper<AppBranchPO> branchConds = new QueryWrapper<>();
+        branchConds.lambda().and( wq -> {
+            for(String id : ids){
+                wq.or().eq(AppBranchPO::getSprintId, id);
+            }
+        });
+        appBranchMapper.delete(branchConds);
+
         return ResponseResult.ok();
     }
 
@@ -176,8 +190,41 @@ public class SprintController {
         sprintMapper.updateById(sprintPO);
         QueryWrapper<SprintAppRelPO> conds = new QueryWrapper<>();
         conds.lambda().eq(SprintAppRelPO::getSprintId, sprintPO.getId());
-        sprintAppRelMapper.delete(conds);
-        sprintAppRelMapper.insertAllApps(sprintPO.getId(), sprintPO.getSprintCode());
+        List<SprintAppRelPO> rels = sprintAppRelMapper.selectList(conds);
+        Map<String, SprintAppRelPO> relMap = new HashMap<>();
+        for(SprintAppRelPO po : rels){
+            relMap.put(po.getAppCode(), po);
+        }
+
+        QueryWrapper<AppPO> appConds = new QueryWrapper<>();
+        List<AppPO> apps = appMapper.selectList(appConds);
+        Map<String, AppPO> appMap = new HashMap<>();
+        for(AppPO po : apps){
+            appMap.put(po.getAppCode(), po);
+        }
+
+        //新增应用
+        for(AppPO po : apps){
+            if(!relMap.containsKey(po.getAppCode())){
+                SprintAppRelPO relPO = new SprintAppRelPO();
+                relPO.setAppId(po.getId());
+                relPO.setAppCode(po.getAppCode());
+                relPO.setSprintId(sprintPO.getId());
+                relPO.setSprintCode(sprintPO.getSprintCode());
+                sprintAppRelMapper.insert(relPO);
+            }
+        }
+
+        // 删除应用
+        List<Long> delId = new ArrayList<>();
+        for(SprintAppRelPO po : rels){
+            if(!appMap.containsKey(po.getAppCode())){
+                delId.add(po.getId());
+            }
+        }
+        if(CollectionUtils.isNotEmpty(delId)){
+            sprintAppRelMapper.deleteBatchIds(delId);
+        }
         return ResponseResult.ok();
     }
 

@@ -78,7 +78,7 @@ const columns = [
     dataIndex: 'sprintCode'
   },
   {
-    title: '是否执行比对',
+    title: '是否生效',
     dataIndex: 'isCompare',
     customRender: function (text) {
       if (text === 1) {
