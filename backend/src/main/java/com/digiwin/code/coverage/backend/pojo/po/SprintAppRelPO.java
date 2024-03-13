@@ -20,6 +20,17 @@ public class SprintAppRelPO {
     private Long appId;
     private String appCode;
 
+    @TableField(exist = false)
+    private String allCount;
+    @TableField(exist = false)
+    private String allFilePath;
+    @TableField(exist = false)
+    private String diffCount;
+    @TableField(exist = false)
+    private String diffFilePath;
+    @TableField(exist = false)
+    private String compareType;
+
     public static SprintAppRelPO createRelPO(SprintAppRelPO rel, SprintPO sprintPO) {
         SprintAppRelPO relPO = new SprintAppRelPO();
         relPO.setAppId(rel.getAppId());

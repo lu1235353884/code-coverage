@@ -34,7 +34,7 @@ public class ReportController {
     @RequestMapping(value = "report", method = RequestMethod.POST)
     public ResponseResult report(
             @ApiParam(value = "生成报告参数", required = true)
-            @RequestBody ReportJacocoParamVO reportJacocoParamVO) {
+            @RequestBody ReportJacocoParamVO reportJacocoParamVO) throws Exception {
         ReportJacocoParam reportJacocoParam = OrikaMapperUtil.map(reportJacocoParamVO, ReportJacocoParam.class);
         reportJacocoParam.setAppId(reportJacocoParam.getAppId().toLowerCase());
         reportService.reportJacoco(reportJacocoParam);

@@ -8,16 +8,17 @@
       </a-alert>
     </a-card>
     <a-card :bordered="false" class="ant-pro-components-tag-select">
-      <a-form :form="form" layout="inline">
-        <standard-form-row title="区域选择" block style="padding-bottom: 11px;">
-          <a-form-item>
-            <tag-select>
-              <tag-select-option value="App">应用</tag-select-option>
-              <tag-select-option value="BM">业务中台</tag-select-option>
-            </tag-select>
-          </a-form-item>
-        </standard-form-row>
-
+      <a-form layout="inline">
+        <a-row :gutter="48">
+          <a-col :md="8" :sm="24">
+            <a-form-item label="应用名">
+              <a-input v-model="code" placeholder=""/>
+            </a-form-item>
+          </a-col>
+          <a-col :md="8" :sm="24">
+            <a-button type="primary" @click="search">查询</a-button>
+          </a-col>
+        </a-row>
       </a-form>
     </a-card>
 
@@ -28,7 +29,7 @@
         :grid="{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }"
         style="margin-top: 24px;">
         <a-list-item slot="renderItem" slot-scope="item">
-          <a-card :body-style="{ paddingBottom: 20 }" hoverable>
+          <a-card :body-style="{ paddingBottom: 20 }" hoverable >
             <a-card-meta :title="item.appCode">
               <template slot="avatar">
                 <a-avatar size="small" src="https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png" />
@@ -44,7 +45,7 @@
               <a-tooltip title="重新生成报告" @click="handleChange(item)">
                 <a-icon type="reload" />
               </a-tooltip>
-              <a-dropdown>
+              <!-- <a-dropdown>
                 <a class="ant-dropdown-link">
                   <a-icon type="ellipsis" />
                 </a>
@@ -59,10 +60,17 @@
                     <a href="javascript:;">3rd menu item</a>
                   </a-menu-item>
                 </a-menu>
-              </a-dropdown>
+              </a-dropdown> -->
             </template>
-            <div class="">
-              <card-info active-user="100" new-user="999"></card-info>
+            <div style="height: 80px;">
+              <card-info
+                active-user="100"
+                new-user="999"
+                :compareType="item.compareType"
+                :allcount="item.allCount"
+                :allfilepath="item.allFilePath"
+                :diffcount="item.diffCount"
+                :difffilepath="item.diffFilePath"></card-info>
             </div>
           </a-card>
         </a-list-item>
@@ -97,10 +105,13 @@ export default {
   data () {
     return {
       data: [],
+      oriData: [],
       sprintCode: '',
       sprintId: null,
       form: this.$form.createForm(this),
-      loading: true
+      loading: true,
+      type: '',
+      code: ''
     }
   },
   filters: {
@@ -160,19 +171,14 @@ export default {
       })
     },
     showDetail (record) {
+      var that = this
       this.$dialog(StepDetail,
         // component props
         {
           record: record,
           on: {
-            ok () {
-              console.log('ok 回调')
-            },
-            cancel () {
-              console.log('cancel 回调')
-            },
             close () {
-              console.log('modal close 回调')
+              that.getList()
             }
           }
         },
@@ -211,12 +217,27 @@ export default {
       //   this.loading = false
       // })
       getSprintRels(this.sprintId).then(res => {
+        this.oriData = res.result
         this.data = res.result
         this.loading = false
       })
     },
     closeDialog () {
       this.$dialog.close()
+    },
+    search () {
+      if (this.code) {
+        this.data = []
+        var that = this
+        const dataCopy = Object.assign([], this.oriData)
+        dataCopy.forEach(e => {
+          if (e.appCode.includes(that.code)) {
+            that.data.push(e)
+          }
+        })
+      } else {
+        this.getList()
+      }
     }
   }
 }

@@ -85,9 +85,13 @@ export function getOneSprint (parameter) {
   })
 }
 
-export function getSprintRels (sprintid) {
+export function getSprintRels (sprintid, type) {
+  let url = api.sprintrels + '?sprintid=' + sprintid
+  if (type) {
+    url = url + '&type=' + type
+  }
   return request({
-    url: api.sprintrels + '?sprintid=' + sprintid,
+    url: url,
     method: 'get'
   })
 }

@@ -4,5 +4,5 @@ import com.digiwin.code.coverage.backend.pojo.dto.ReportJacocoParam;
 
 public interface ReportService {
 
-    public void reportJacoco(ReportJacocoParam reportJacocoParam);
+    public void reportJacoco(ReportJacocoParam reportJacocoParam) throws Exception;
 }

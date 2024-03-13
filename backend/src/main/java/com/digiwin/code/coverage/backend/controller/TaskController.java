@@ -2,6 +2,7 @@ package com.digiwin.code.coverage.backend.controller;
 
 import com.digiwin.code.coverage.backend.common.log.LoggerUtil;
 import com.digiwin.code.coverage.backend.common.response.ResponseResult;
+import com.digiwin.code.coverage.backend.config.CustomizeConfig;
 import com.digiwin.code.coverage.backend.mapper.AppBranchMapper;
 import com.digiwin.code.coverage.backend.pojo.po.AppBranchPO;
 import com.digiwin.code.coverage.backend.pojo.vo.ReportJacocoParamVO;
@@ -14,10 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Executor;
 
 /**
@@ -48,6 +46,12 @@ public class TaskController {
     @Autowired
     private ReportController reportController;
 
+    @Autowired
+    private APIController apiController;
+
+    @Autowired
+    private CustomizeConfig customizeConfig;
+
     @ApiOperation("执行任务")
     @RequestMapping(value = "task", method = RequestMethod.GET)
     @ResponseBody
@@ -66,6 +70,16 @@ public class TaskController {
             }else {
                 po = appBranchMapper.selectById(id);
                 po.setStatus("2");
+                po.setAllFilePath(null);
+                po.setAllFileDate(null);
+                po.setAllCount(null);
+                po.setDiffFilePath(null);
+                po.setDiffFileDate(null);
+                po.setDiffCount(null);
+                po.setDownloadBranchDate(null);
+                po.setDownloadDataFileDate(null);
+                po.setCompileDate(null);
+                po.setCompareDate(null);
                 appBranchMapper.resetInfo(id);
             }
             try {
@@ -85,10 +99,16 @@ public class TaskController {
 
                 LoggerUtil.info(log, String.format("应用%s，生成全量报告，开始", appcode));
                 String allReportPath = createReport(appcode, filePath, reportJacocoParamVO, "all");
+                Map<String, Object> reportMap = apiController.getResponseCount(allReportPath);
+                if(reportMap.containsKey("tfootThirdTdContent")){
+                    po.setAllCount(Objects.toString(reportMap.get("tfootThirdTdContent")));
+                }
+                String reportBasePath = customizeConfig.getReportDir();
+                allReportPath = allReportPath.replace(reportBasePath, "").replace("\\", "/");
                 LoggerUtil.info(log, String.format("应用%s，生成全量报告，保存路径为%s，结束", appcode, allReportPath));
                 po.setAllFilePath(allReportPath);
                 po.setAllFileDate(new Date());
-                if(StringUtils.equals(po.getCompareType(), "branch")){
+                if(StringUtils.equals(po.getCompareType(), "all")){
                     po.setStatus("3");
                 }
                 appBranchMapper.updateById(po);
@@ -96,7 +116,12 @@ public class TaskController {
                     LoggerUtil.info(log, String.format("应用%s，生成增量报告，开始", appcode));
                     String branchReportPath = createReport(appcode, filePath, reportJacocoParamVO, "branch");
                     LoggerUtil.info(log, String.format("应用%s，生成增量报告，保存路径为%s，结束", appcode, branchReportPath));
-                    po.setDiffFilePath(allReportPath);
+                    reportMap = apiController.getResponseCount(branchReportPath);
+                    if(reportMap.containsKey("tfootThirdTdContent")){
+                        po.setDiffCount(Objects.toString(reportMap.get("tfootThirdTdContent")));
+                    }
+                    branchReportPath = branchReportPath.replace(reportBasePath, "").replace("\\", "/");
+                    po.setDiffFilePath(branchReportPath);
                     po.setDiffFileDate(new Date());
                     po.setStatus("3");
                     appBranchMapper.updateById(po);
@@ -110,7 +135,7 @@ public class TaskController {
         return ResponseResult.ok();
     }
 
-    private String createReport(String appcode, String filePath, ReportJacocoParamVO reportJacocoParamVO, String type) {
+    private String createReport(String appcode, String filePath, ReportJacocoParamVO reportJacocoParamVO, String type) throws Exception {
         ReportJacocoParamVO reportJacocoParamVOT = new ReportJacocoParamVO();
         reportJacocoParamVOT.setAppId(appcode);
         List<String> pathLs = new ArrayList<>();
@@ -125,7 +150,7 @@ public class TaskController {
         // 生成报告
         ResponseResult reportRes = reportController.report(reportJacocoParamVOT);
         String reportPath = reportRes.getMessage();
-        return reportPath;
+        return reportPath + "\\index.html";
     }
 
     public void downLoadCodeAndCompile(ReportJacocoParamVO reportJacocoParamVO, AppBranchPO po, String appcode){

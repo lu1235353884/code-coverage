@@ -22,8 +22,10 @@ public class AppBranchPO {
   private String targetBranchName;
   private String allFilePath;
   private Date allFileDate;
+  private String allCount;
   private String diffFilePath;
   private Date diffFileDate;
+  private String diffCount;
   private Date downloadBranchDate;
   private Date downloadDataFileDate;
   private Date compileDate;

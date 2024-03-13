@@ -18,7 +18,9 @@ public interface AppBranchMapper extends BaseMapper<AppBranchPO> {
             "    download_data_file_date=null, " +
             "    compile_date=null, " +
             "    compare_date=null, " +
-            "    status='2' " +
+            "    status='2', " +
+            "    all_count=null," +
+            "    diff_count=null " +
             "where id = #{id} ")
     int resetInfo(@Param("id")Long id);
 

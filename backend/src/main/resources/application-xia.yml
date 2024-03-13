@@ -6,7 +6,7 @@ git:
   local:
     base:
       dir: C:\jacoco\testCode
-      reportDir: C:\jacoco\report_all
+      reportDir: C:\nginx-1.22.1\html
   ssh:
     priKey: C:\Users\mylocl/.ssh/id_rsa.
 

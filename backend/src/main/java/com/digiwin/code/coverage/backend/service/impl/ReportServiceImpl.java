@@ -44,45 +44,36 @@ public class ReportServiceImpl implements ReportService {
     private CustomizeConfig customizeConfig;
 
     @Override
-    public void reportJacoco(ReportJacocoParam reportJacocoParam)  {
+    public void reportJacoco(ReportJacocoParam reportJacocoParam) throws Exception {
 
         //有APPid，无视出入路径
         reportJacocoParam.setClassesDirectory(new ArrayList<String>());
         reportJacocoParam.setSourceDirectory(new ArrayList<String>());
         //根据是否有diff的入参来确认全量报告还是增量报告
-        String reportPath = customizeConfig.getReportDir()+"/"+reportJacocoParam.getAppId()+(StringUtils.isEmpty(reportJacocoParam.getDiffCodeFile())?"":"-diff");
-        try {
-            FileUtils.restFileMkdirs(reportPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String reportPath = customizeConfig.getReportDir()+"/report_all/"+reportJacocoParam.getAppId()+(StringUtils.isEmpty(reportJacocoParam.getDiffCodeFile())?"":"-diff");
+        FileUtils.restFileMkdirs(reportPath);
         reportJacocoParam.setReportDirectory(reportPath);
         reportJacocoParam.setReportName(reportJacocoParam.getAppId());
         String appPath = customizeConfig.getGitLocalBaseRepoDir()+"/"+reportJacocoParam.getAppId()+"_backend/"+reportJacocoParam.getSourceBranchName()+"/develop/module/";
 
-        try{
-            Stream<Path> stream = Files.walk(Paths.get(appPath), 1);
-            List<String> moduleList= stream.filter(Files::isDirectory) // 确保是目录
-                    .filter(p -> !p.equals(Paths.get(appPath))) // 排除根目录
-                    .map(Path::getFileName) // 获取文件或文件夹名称
-                    .map(Path::toString) // 转换为字符串
-                    .collect(Collectors.toList());
+        Stream<Path> stream = Files.walk(Paths.get(appPath), 1);
+        List<String> moduleList= stream.filter(Files::isDirectory) // 确保是目录
+                .filter(p -> !p.equals(Paths.get(appPath))) // 排除根目录
+                .map(Path::getFileName) // 获取文件或文件夹名称
+                .map(Path::toString) // 转换为字符串
+                .collect(Collectors.toList());
 
-            if(!CollectionUtils.isEmpty(moduleList)){
-                moduleList.forEach(m->{
-                    reportJacocoParam.getClassesDirectory().add(appPath+m+"/"+reportJacocoParam.getAppId()+"-service-impl-"+m+"/target/classes");
-                    reportJacocoParam.getSourceDirectory().add(appPath+m+"/"+reportJacocoParam.getAppId()+"-service-impl-"+m+"/src/main/java");
-                });
-                //解析exec
-                ExecFileLoader execFileLoader = loadExecutionData(reportJacocoParam.getExecutionDataFile());
-                //对比exec和class类，生成覆盖数据
-                IBundleCoverage bundleCoverage = analyzeStructure(reportJacocoParam, execFileLoader);
-                //生成报告
-                createReport(bundleCoverage, execFileLoader, reportJacocoParam);
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
+        if(!CollectionUtils.isEmpty(moduleList)){
+            moduleList.forEach(m->{
+                reportJacocoParam.getClassesDirectory().add(appPath+m+"/"+reportJacocoParam.getAppId()+"-service-impl-"+m+"/target/classes");
+                reportJacocoParam.getSourceDirectory().add(appPath+m+"/"+reportJacocoParam.getAppId()+"-service-impl-"+m+"/src/main/java");
+            });
+            //解析exec
+            ExecFileLoader execFileLoader = loadExecutionData(reportJacocoParam.getExecutionDataFile());
+            //对比exec和class类，生成覆盖数据
+            IBundleCoverage bundleCoverage = analyzeStructure(reportJacocoParam, execFileLoader);
+            //生成报告
+            createReport(bundleCoverage, execFileLoader, reportJacocoParam);
         }
 
     }

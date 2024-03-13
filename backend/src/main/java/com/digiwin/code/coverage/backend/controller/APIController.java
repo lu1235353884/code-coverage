@@ -94,12 +94,17 @@ public class APIController {
     @GetMapping("/extract-data")
     @ResponseBody
     public ResponseResult extractHtmlData() {
+        String path = "D:\\jacoco\\report_all\\bm-opsc-diff\\index.html";
+        return ResponseResult.ok(getResponseCount(path));
+    }
+
+    public Map<String, Object> getResponseCount(String path) {
         Map<String, Object> result = new HashMap<>();
-        File file = new File("D:\\jacoco\\report_all\\bm-opsc-diff\\index.html");
+        File file = new File(path);
 
         if (!file.exists()) {
             result.put("error", "File not found");
-            return ResponseResult.ok(result);
+            return result;
         }
 
         try {
@@ -121,10 +126,9 @@ public class APIController {
             }
         } catch (IOException e) {
             result.put("error", "Error reading the HTML file: " + e.getMessage());
-            return ResponseResult.ok(result);
         }
 
-        return ResponseResult.ok(result);
+        return result;
     }
 
 }

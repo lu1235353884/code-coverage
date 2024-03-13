@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 冲刺管理页面
@@ -108,14 +109,33 @@ public class SprintController {
     @ApiOperation("分页查询冲刺包含的应用")
     @RequestMapping(value = "sprint/rels", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseResult getRelAppOnPage(@RequestParam(value = "sprintid", required = false) Long sprintId){
+    public ResponseResult getRelAppOnPage(@RequestParam(value = "sprintid", required = false) Long sprintId,
+                                          @RequestParam(value = "type", required = false) String type){
         if(sprintId==null){
             return ResponseResult.fail("入参sprintid不可为空");
         }
-        QueryWrapper<SprintAppRelPO> conds = new QueryWrapper<>();
-        conds.lambda().eq(SprintAppRelPO::getSprintId, sprintId);
-        List<SprintAppRelPO> ls = sprintAppRelMapper.selectList(conds);
-        return ResponseResult.ok(ls);
+        List<Map<String, Object>> ls = sprintAppRelMapper.getListBySprintId(sprintId, type);
+//        QueryWrapper<SprintAppRelPO> conds = new QueryWrapper<>();
+//        conds.lambda().eq(SprintAppRelPO::getSprintId, sprintId);
+//        List<SprintAppRelPO> ls = sprintAppRelMapper.selectList(conds);
+        List<SprintAppRelPO> rtn = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(ls)){
+            for(Map<String, Object> map : ls){
+                SprintAppRelPO po = new SprintAppRelPO();
+                po.setId((Long)map.get("id"));
+                po.setSprintId((Long)map.get("sprint_id"));
+                po.setSprintCode((String)map.get("sprint_code"));
+                po.setAppId((Long)map.get("app_id"));
+                po.setAppCode((String)map.get("app_code"));
+                po.setAllCount((String)map.get("all_count"));
+                po.setAllFilePath((String)map.get("all_file_path"));
+                po.setDiffCount((String)map.get("diff_count"));
+                po.setDiffFilePath((String)map.get("diff_file_path"));
+                po.setCompareType((String)map.get("compare_type"));
+                rtn.add(po);
+            }
+        }
+        return ResponseResult.ok(rtn);
     }
 
     @ApiOperation("删除冲刺")
