@@ -1,25 +1,24 @@
 <template>
   <div>
     <a-card :bordered="false" class="ant-pro-components-tag-select">
-      <a-alert showIcon="true">
-        <template slot="message">
-          <span style="margin-right: 12px">当前冲刺为{{ sprintCode }}</span>
-        </template>
+      <a-alert showIcon="true" :message="'当前冲刺：' + sprintCode" type="info" show-icon>
       </a-alert>
     </a-card>
     <a-card :bordered="false" class="ant-pro-components-tag-select">
       <a-form layout="inline">
-        <a-row :gutter="48">
-          <a-col :md="5" :sm="5">
-            <a-form-item label="应用名">
+        <a-row :gutter="1">
+          <a-col :md="7" :sm="5">
+            <a-form-item label="应用/业务中台名称">
               <a-input v-model="code" placeholder=""/>
             </a-form-item>
           </a-col>
-          <a-col :md="2" :sm="5">
+          <a-col :pull="1" :md="3" :sm="5">
             <a-button type="primary" @click="search">查询</a-button>
           </a-col>
-          <a-col :md="2" :sm="5">
-            <a-button type="primary" @click="handle">全部执行</a-button>
+          <a-col :push="12" :md="3" :sm="5">
+            <a-button shape="round" danger @click="handle">
+              一键执行
+            </a-button>
           </a-col>
         </a-row>
       </a-form>
@@ -29,7 +28,7 @@
       <a-list
         :loading="loading"
         :data-source="data"
-        :grid="{ gutter: 24, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }"
+        :grid="{ gutter: 24, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }"
         style="margin-top: 24px;">
         <a-list-item slot="renderItem" slot-scope="item">
           <a-card :body-style="{ paddingBottom: 20 }" hoverable >
@@ -45,7 +44,7 @@
               <a-tooltip title="编辑对比分支" @click="edit(item)">
                 <a-icon type="edit" />
               </a-tooltip>
-              <a-tooltip title="重新生成报告" @click="handleChange(item)">
+              <a-tooltip title="生成报告" @click="handleChange(item)">
                 <a-icon type="reload" />
               </a-tooltip>
               <!-- <a-dropdown>
@@ -149,7 +148,7 @@ export default {
           var that = this
           this.$confirm({
               title: '警告',
-              content: '当前项目未配置分支信息，只能执行全量比对，是否执行？',
+              content: '当前项目未配置分支信息，是否执行？',
               okText: '确定',
               okType: 'danger',
               cancelText: '取消',
@@ -200,7 +199,7 @@ export default {
         },
         // modal props
         {
-          title: '操作',
+          title: '执行详情',
           width: 900,
           centered: true,
           maskClosable: false
@@ -214,7 +213,7 @@ export default {
         },
         // modal props
         {
-          title: '操作',
+          title: '编辑对比分支',
           width: 700,
           centered: true,
           maskClosable: false
@@ -259,12 +258,19 @@ export default {
     },
     handle () {
       var that = this
-      excuteAllTask(this.sprintId).then(res => {
-        if (res && res.success) {
-          that.$message.info('任务已进入执行队列，请等待')
-        } else {
-          that.$message.error('任务执行失败')
-        }
+      Modal.confirm({
+        title: this.$t('一键执行所有应用/业务中台'),
+        content: this.$t('所有已生成的报告将被删除，请谨慎执行！'),
+        onOk: () => {
+          excuteAllTask(this.sprintId).then(res => {
+            if (res && res.success) {
+              that.$message.info('任务已进入执行队列，请等待')
+            } else {
+              that.$message.error('任务执行失败')
+            }
+          })
+        },
+        onCancel () { }
       })
     }
   }

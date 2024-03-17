@@ -2,10 +2,10 @@
 import { UserLayout, BasicLayout, BlankLayout } from '@/layouts'
 // import { bxAnaalyse } from '@/core/icons'
 
-const RouteView = {
-  name: 'RouteView',
-  render: h => h('router-view')
-}
+// const RouteView = {
+//   name: 'RouteView',
+//   render: h => h('router-view')
+// }
 
 export const asyncRouterMap = [
   {
@@ -13,7 +13,7 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: 'menu.home' },
-    redirect: '/codecoverage/listReport',
+    redirect: '/codecoverage',
     // redirect: '/dashboard/workplace',
     children: [
       // dashboard
@@ -71,39 +71,46 @@ export const asyncRouterMap = [
       //     }
       //   ]
       // },
-      //  code-coverage
       {
         path: '/codecoverage',
         name: 'codecoverage',
-        component: RouteView,
-        redirect: '/codecoverage/listReport',
-        meta: { title: 'menu.code-coverage', icon: 'table', permission: ['table'] },
-        children: [
-          {
-            path: '/codecoverage/listReport',
-            name: 'listReport',
-            hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
-            component: () => import('@/views/codecoverage/sprint.vue'),
-            // redirect: '/codecoverage/listReport/S16',
-            meta: { title: 'menu.code-coverage.list', keepAlive: true, permission: ['table'] }
-            // children: [
-            //   {
-            //     path: '/codecoverage/listReport/S16',
-            //     name: 'S16',
-            //     component: () => import('@/views/codecoverage/sprint.vue'),
-            //     meta: { title: 'menu.code-coverage.list', permission: ['table'] }
-            //   }
-            //   ]
-          }
-          // {
-          //   path: '/codecoverage/listReport/S16',
-          //   name: 'S16',
-          //   hideChildrenInMenu: true,
-          //   component: () => import('@/views/codecoverage/sprint.vue'),
-          //   meta: { title: 'menu.code-coverage.list', permission: ['table'] }
-          // }
-        ]
+        hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+        component: () => import('@/views/codecoverage/sprint.vue'),
+        meta: { title: 'menu.code-coverage', icon: 'table', permission: ['table'] }
       },
+      //  code-coverage
+      // {
+      //   path: '/codecoverage',
+      //   name: 'codecoverage',
+      //   component: RouteView,
+      //   redirect: '/codecoverage/listReport',
+      //   meta: { title: 'menu.code-coverage', icon: 'table', permission: ['table'] },
+      //   children: [
+      //     {
+      //       path: '/codecoverage/listReport',
+      //       name: 'listReport',
+      //       hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+      //       component: () => import('@/views/codecoverage/sprint.vue'),
+      //       // redirect: '/codecoverage/listReport/S16',
+      //       meta: { title: 'menu.code-coverage.list', keepAlive: true, permission: ['table'] }
+      //       // children: [
+      //       //   {
+      //       //     path: '/codecoverage/listReport/S16',
+      //       //     name: 'S16',
+      //       //     component: () => import('@/views/codecoverage/sprint.vue'),
+      //       //     meta: { title: 'menu.code-coverage.list', permission: ['table'] }
+      //       //   }
+      //       //   ]
+      //     }
+      //     // {
+      //     //   path: '/codecoverage/listReport/S16',
+      //     //   name: 'S16',
+      //     //   hideChildrenInMenu: true,
+      //     //   component: () => import('@/views/codecoverage/sprint.vue'),
+      //     //   meta: { title: 'menu.code-coverage.list', permission: ['table'] }
+      //     // }
+      //   ]
+      // },
       // {
       //   path: '/codecoverage/listReport/S16',
       //   name: 'S16',

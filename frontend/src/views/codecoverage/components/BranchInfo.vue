@@ -1,7 +1,7 @@
 <template>
   <a-form @submit="handleSubmit" :form="form">
     <a-form-item
-      label="比较源分支"
+      label="源分支"
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
     >
@@ -12,7 +12,7 @@
       </a-select>
     </a-form-item>
     <a-form-item
-      label="比较目标分支"
+      label="目标分支"
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
     >
