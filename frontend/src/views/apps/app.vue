@@ -77,7 +77,8 @@ import CreateForm from './CreateForm'
 const columns = [
   {
     title: '应用名',
-    dataIndex: 'appCode'
+    dataIndex: 'appCode',
+    sorter: true
   },
   {
     title: '归属方',
@@ -130,6 +131,7 @@ export default {
       code: null,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
+        console.log(parameter)
         this.code = this.$praseStrEmpty(this.code)
         const queryParam = { 'appcode': this.code }
         const requestParameters = Object.assign({}, parameter, queryParam)
@@ -181,11 +183,17 @@ export default {
       params['sm'] = values.sm
       params['phoneNumber'] = values.phoneNumber
       saveApp(params).then(res => {
+        const cst = params.id ? '修改' : '新增'
         if (res.success) {
           this.$refs.table.refresh()
-          this.$message.info('修改成功')
+          this.$message.info(cst + '成功')
         } else {
-          this.$message.info('修改失败')
+          const msg = res.message
+          if (msg) {
+            this.$message.error(cst + '失败，原因为：' + msg)
+          } else {
+            this.$message.error(cst + '失败')
+          }
         }
       })
       this.curIndex = 0

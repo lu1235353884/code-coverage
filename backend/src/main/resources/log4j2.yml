@@ -71,7 +71,7 @@ Configuration:
           max: 1000
   Loggers:
     Root:
-      level: info
+      level: debug
       AppenderRef:
         - ref: CONSOLE
         - ref: info

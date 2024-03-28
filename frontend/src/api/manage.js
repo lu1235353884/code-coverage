@@ -120,8 +120,15 @@ export function deleteSprint (sprintcode) {
 }
 
 export function getApplist (parameter) {
+  var url = api.applist + '?appcode=' + parameter.appcode + '&size=' + parameter.pageSize + '&page=' + parameter.pageNo
+  if (parameter.sortField) {
+    url = url + '&sortfield=' + parameter.sortField
+  }
+  if (parameter.sortOrder) {
+    url = url + '&sortorder=' + parameter.sortOrder
+  }
   return request({
-    url: api.applist + '?appcode=' + parameter.appcode + '&size=' + parameter.pageSize + '&page=' + parameter.pageNo,
+    url: url,
     method: 'get'
   })
 }
