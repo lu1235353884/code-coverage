@@ -39,7 +39,9 @@ public class AppController {
     @ResponseBody
     public ResponseResult getAppList(@RequestParam(value = "size", required = false) Integer size,
                                      @RequestParam(value = "page", required = false) Integer pageNum,
-                                     @RequestParam(value = "appcode", required = false) String appCode){
+                                     @RequestParam(value = "appcode", required = false) String appCode,
+                                     @RequestParam(value = "sortfield", required = false) String sortField,
+                                     @RequestParam(value = "sortorder", required = false) String sortOrder){
         String checkStr = checkAppListParam(size, pageNum);
         if(StringUtils.isNotEmpty(checkStr)){
             return ResponseResult.fail("入参"+checkStr+"不可为空");
@@ -48,9 +50,16 @@ public class AppController {
         if(StringUtils.isNotEmpty(appCode)){
             conds.lambda().eq(AppPO::getAppCode, appCode);
         }
-        Page<AppPO> page = new Page<>();
-        page.setSize(size);
-        page.setPages(pageNum);
+        if(StringUtils.isNotEmpty(sortField)){
+            if(StringUtils.equals(sortOrder, "ascend")){
+                conds.orderByAsc("app_code");
+            }else if(StringUtils.equals(sortOrder, "descend")){
+                conds.orderByDesc("app_code");
+            }
+        }
+        Page<AppPO> page = new Page<>(pageNum, size);
+//        page.setSize(size);
+//        page.setPages(pageNum);
         Page<AppPO> pageRtn = appMapper.selectPage(page, conds);
         return ResponseResult.ok(pageRtn);
     }
@@ -73,6 +82,12 @@ public class AppController {
     @RequestMapping(value = "app", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult addApp(@RequestBody AppPO appPO){
+        QueryWrapper<AppPO> cond = new QueryWrapper<>();
+        cond.lambda().eq(AppPO::getAppCode, appPO.getAppCode());
+        AppPO t = appMapper.selectOne(cond);
+        if(t!=null){
+            return ResponseResult.fail(String.format("应用%s已存在，不可重复添加", appPO.getAppCode()));
+        }
         return ResponseResult.ok(appMapper.insert(appPO));
     }
 
