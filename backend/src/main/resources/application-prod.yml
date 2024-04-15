@@ -1,0 +1,28 @@
+git:
+  userName: lujunb
+  password: Lujun123535884
+  bmUrl: https://bm-devops-gitea.digiwincloud.com.cn/
+  appUrl: https://tiger-devops-gitea.digiwincloud.com.cn/
+  local:
+    base:
+      dir: C:\jacocoNew\testCode
+      reportDir: C:\jacocoNew\nginx-1.22.1\html
+  ssh:
+    priKey: C:\Users\mylocl/.ssh/id_rsa.
+
+maven:
+  home: C:\JACOCO\tool\install\apache-maven-3.8.8-bin\apache-maven-3.8.8
+#  userSetting: D:\01_devTools\apache-maven-3.8.8-bin\apache-maven-3.8.8\conf\settings-aliyun.xml
+  userSetting: C:\JACOCO\tool\install\apache-maven-3.8.8-bin\apache-maven-3.8.8\conf\settings-dingjie.xml
+#代码的根目录，非标准maven项目需要自定义
+root:
+  code:
+    path: src/main/java/
+jacoco:
+  root:
+    path: C:\jacocoNew
+  download:
+    path: C:\jacocoNew\exec_all\download
+    url: https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/test/{0}backend/test/dwlogs/{1}/{2}.exec
+
+
