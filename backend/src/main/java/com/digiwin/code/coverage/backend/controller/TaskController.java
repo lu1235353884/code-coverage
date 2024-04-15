@@ -36,7 +36,7 @@ import java.util.concurrent.Executor;
 @Slf4j
 public class TaskController {
 
-    @Resource(name = "asyncExecutor")
+    @Resource(name = "oneAsyncExecutor")
     private Executor executor;
 
     @Autowired
