@@ -41,6 +41,12 @@ public class CustomizeConfig {
     @Value(value = "${git.local.base.reportDir}")
     private String reportDir;
 
+    /**
+     * 报告生成的地址
+     */
+    @Value(value = "${git.local.base.reportTestDir}")
+    private String reportTestDir;
+
 
     /**
      * bmUrl

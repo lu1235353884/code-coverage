@@ -88,6 +88,7 @@ export default {
       id: 0,
       relid: this.record.id,
       appcode: this.record.appCode,
+      nowPartition: this.record.appPartition,
       result: {},
       status: '',
       statusIcon: '',
@@ -106,7 +107,7 @@ export default {
   },
   methods: {
     getInfo () {
-      getAppBranch(this.relid, this.appcode).then(res => {
+      getAppBranch(this.relid, this.appcode, this.nowPartition).then(res => {
         this.result = res.result
         if (!this.result) {
           this.result = {}

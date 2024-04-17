@@ -17,6 +17,10 @@ public class AppBranchPO {
   private Long relId;
   private Long sprintId;
   private String appCode;
+
+  // 应用分区
+  private String appPartition;
+
   private String compareType;
   private String status;
   private String sourceBranchName;

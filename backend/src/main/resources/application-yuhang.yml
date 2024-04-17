@@ -5,25 +5,25 @@ git:
   appUrl: https://tiger-devops-gitea.digiwincloud.com.cn/
   local:
     base:
-      dir: D:\jacoco\testCode
-      reportDir: D:\jacoco\report_all
+      dir: C:\jacoco\testCode
+      reportDir: C:\nginx-1.22.1\html
       reportTestDir: D:\jacoco\report_all\test
   ssh:
     priKey: C:\Users\mylocl/.ssh/id_rsa.
 
 maven:
-  home: D:\01_devTools\apache-maven-3.8.8-bin\apache-maven-3.8.8
+  home: D:\apache-maven-3.9.6
 #  userSetting: D:\01_devTools\apache-maven-3.8.8-bin\apache-maven-3.8.8\conf\settings-aliyun.xml
-  userSetting: D:\01_devTools\apache-maven-3.8.8-bin\apache-maven-3.8.8\conf\settings-dingjie.xml
+  userSetting: C:\Users\Lidatou\.m2\settings.xml
 #代码的根目录，非标准maven项目需要自定义
 root:
   code:
     path: src/main/java/
 jacoco:
   root:
-    path: D:\jacoco\
+    path: C:\jacoco\
   download:
-    path: D:\jacoco\exec_all\download
+    path: C:\jacoco\exec_all\download
     url: https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/test/{0}backend/test/dwlogs/{1}/{2}.exec
 
 

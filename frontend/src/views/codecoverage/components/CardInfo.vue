@@ -17,10 +17,10 @@
     <a-row style="margin-top: 8px;margin-bottom: 1px;">
       <a-col :md="10" :sm="10">全量代码覆盖率</a-col>
       <a-col :md="4" :sm="4">
-        <p v-if="allfilepath">
+        <p v-show="allfilepath">
           <a :href="allfilepath" target="_blank">{{ allCount }}</a>
         </p>
-        <p v-if="!allfilepath">
+        <p v-show="!allfilepath">
           {{ allCount }}
         </p>
       </a-col>
@@ -29,10 +29,10 @@
     <a-row style="margin-bottom: 0px;" v-if="compareType && compareType==='branch'">
       <a-col :md="10" :sm="10">增量代码覆盖率</a-col>
       <a-col :md="4" :sm="4">
-        <p v-if="difffilepath">
+        <p v-show="difffilepath">
           <a :href="difffilepath" target="_blank">{{ diffCount }}</a>
         </p>
-        <p v-if="!difffilepath">
+        <p v-show="!difffilepath">
           {{ diffCount }}
         </p>
       </a-col>
@@ -103,32 +103,32 @@ export default {
 }
 </script>
 
-<!-- <style lang="less" scoped>
-@import "~@/components/index.less";
-@import "~@/utils/utils.less";
-
-.cardInfo {
-
-  .clearfix();
-
-  margin-top: 16px;
-  margin-left: 40px;
-  & > div {
-    position: relative;
-    float: left;
-    width: 33%;
-    text-align: left;
-    p {
-      margin: 0;
-      font-size: 24px;
-      line-height: 32px;
-    }
-    p:first-child {
-      margin-bottom: 4px;
-      color: @text-color-secondary;
-      font-size: 12px;
-      line-height: 20px;
-    }
-  }
-}
-</style> -->
+<style lang="less" scoped>
+//@import "~@/components/index.less";
+//@import "~@/utils/utils.less";
+//
+//.cardInfo {
+//
+//  .clearfix();
+//
+//  margin-top: 16px;
+//  margin-left: 40px;
+//  & > div {
+//    position: relative;
+//    float: left;
+//    width: 33%;
+//    text-align: left;
+//    p {
+//      margin: 0;
+//      font-size: 24px;
+//      line-height: 32px;
+//    }
+//    p:first-child {
+//      margin-bottom: 4px;
+//      color: @text-color-secondary;
+//      font-size: 12px;
+//      line-height: 20px;
+//    }
+//  }
+//}
+</style>

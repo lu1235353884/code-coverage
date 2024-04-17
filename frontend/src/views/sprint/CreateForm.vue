@@ -16,7 +16,20 @@
               <a-input :readOnly="isReadOnly" :disabled="isReadOnly" v-decorator="['sprintCode', {rules: [{required: true, message: '冲刺必填！'}]}]" />
             </a-form-item>
           </a-col>
-          <a-col :md="16" :sm="16">
+          <a-col :md="6" :sm="6">
+            <a-form-item label="分区">
+              <a-select
+                  :value="appPartition"
+                  :disabled="isReadOnly"
+                  @change="handleChange"
+              >
+                <a-select-option value="dev">dev</a-select-option>
+                <a-select-option value="test">test</a-select-option>
+              </a-select>
+<!--              <a-input :readOnly="isReadOnly" :disabled="isReadOnly" v-decorator="['appPartition', {rules: [{required: true, message: '分区必填！'}]}]" />-->
+            </a-form-item>
+          </a-col>
+          <a-col :md="10" :sm="10">
             <a-form-item label="是否生效">
               <a-checkbox v-model="isCompare"/>
             </a-form-item>
@@ -117,6 +130,10 @@ export default {
       type: String,
       default: () => ''
     },
+    partition: {
+      type: String,
+      default: () => ''
+    },
     isCompared: {
       type: Boolean,
       default: () => false
@@ -141,6 +158,7 @@ export default {
       isReadOnly: false,
       isCompare: this.isCompared,
       sprintCode: this.sprintcode,
+      appPartition: this.partition,
       appVisible: false
       // loadData: parameter => {
       //   this.isCompare = this.isCompared
@@ -169,9 +187,12 @@ export default {
     this.$watch('curIndex', () => {
       this.isCompare = this.isCompared
       this.sprintCode = this.sprintcode
+      this.appPartition = this.partition
+      console.log('curIndex', this.appPartition)
       this.form.setFieldsValue({
         sprintCode: this.sprintCode,
-        isCompare: this.isCompare
+        isCompare: this.isCompare,
+        appPartition: this.appPartition
       })
     })
   },
@@ -199,8 +220,13 @@ export default {
       const sprintCode = this.form.getFieldValue('sprintCode')
       return {
         'sprintCode': sprintCode,
-        'isCompare': this.isCompare
+        'isCompare': this.isCompare,
+        'appPartition': this.appPartition
       }
+    },
+    handleChange (item) {
+      // console.log(item)
+      this.appPartition = item
     }
   },
   watch: {

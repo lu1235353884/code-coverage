@@ -57,6 +57,7 @@
         :curIndex="curIndex"
         :sprintcode="sprintcode"
         :isCompared="isCompared"
+        :partition="appPartition"
         @cancel="handleCancel"
         @ok="handleOk"
       />
@@ -89,6 +90,10 @@ const columns = [
     }
   },
   {
+    title: '分区',
+    dataIndex: 'appPartition'
+  },
+  {
     title: '操作',
     dataIndex: 'action',
     width: '150px',
@@ -112,6 +117,7 @@ export default {
       curIndex: null,
       sprintcode: null,
       isCompared: null,
+      appPartition: null,
       // 查询参数
       code: null,
       // 加载数据方法 必须为 Promise 对象
@@ -143,13 +149,16 @@ export default {
       this.curIndex = null
       this.sprintcode = null
       this.isCompared = false
+      this.appPartition = null
       this.visible = true
     },
     handleEdit (record) {
-      this.visible = true
       this.curIndex = record.id
       this.sprintcode = record.sprintCode
       this.isCompared = record.isCompare === 1
+      this.appPartition = record.appPartition
+      this.visible = true
+      console.log('record', record, this.appPartition)
     },
     handleOk () {
       const values = this.$refs.createModal.getData()
@@ -161,11 +170,13 @@ export default {
       }
       params['sprintCode'] = values.sprintCode
       params['isCompare'] = values.isCompare ? 1 : 0
+      params['appPartition'] = values.appPartition
       saveSprint(params).then(res => {
         if (res.success) {
           this.$refs.table.refresh()
           this.$message.info('修改成功')
         } else {
+          this.$refs.table.refresh()
           this.$message.info('修改失败')
         }
       })

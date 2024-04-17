@@ -50,6 +50,7 @@ export default {
       sprintId: this.record.sprintId,
       relid: this.record.id,
       appcode: this.record.appCode,
+      nowPartition: this.record.appPartition,
       sourceBranch: '',
       targetBranch: '',
       form: this.$form.createForm(this),
@@ -59,7 +60,7 @@ export default {
   mounted () {
     this.loading = true
     if (this.relid && this.appcode) {
-      getAppBranch(this.relid, this.appcode).then(res => {
+      getAppBranch(this.relid, this.appcode, this.nowPartition).then(res => {
         const rtn = res.result
         if (rtn) {
           this.id = rtn.id
@@ -87,6 +88,8 @@ export default {
         sprintId: this.sprintId,
         relId: this.relid,
         appCode: this.appcode,
+        // 所属分区
+        appPartition: this.nowPartition,
         compareType: 'branch',
         sourceBranchName: this.sourceBranch,
         targetBranchName: this.targetBranch

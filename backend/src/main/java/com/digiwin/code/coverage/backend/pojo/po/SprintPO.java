@@ -17,6 +17,7 @@ public class SprintPO {
   private Long id;
   private String sprintCode;
   private Long isCompare;
+  private String appPartition;
 
   @TableField(exist = false)
   @JSONField(name = "rels")

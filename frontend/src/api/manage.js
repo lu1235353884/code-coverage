@@ -10,6 +10,7 @@ const api = {
   sprint: '/sprint/sprint',
   sprintrels: '/sprint/sprint/rels',
   sprintlist: '/sprint/sprintlist',
+  sprintPartition: '/sprint/sprintListPartition',
   comparesprint: '/sprint/compare/sprint',
   applist: '/app/applist',
   app: '/app/app',
@@ -86,10 +87,13 @@ export function getOneSprint (parameter) {
   })
 }
 
-export function getSprintRels (sprintid, type) {
+export function getSprintRels (sprintid, type, partition) {
   let url = api.sprintrels + '?sprintid=' + sprintid
   if (type) {
     url = url + '&type=' + type
+  }
+  if (partition) {
+    url = url + '&partition=' + partition
   }
   return request({
     url: url,
@@ -100,6 +104,13 @@ export function getSprintRels (sprintid, type) {
 export function getSprintList (parameter) {
   return request({
     url: api.sprintlist + '?sprintcode=' + parameter.sprintcode + '&size=' + parameter.pageSize + '&page=' + parameter.pageNo,
+    method: 'get'
+  })
+}
+
+export function getSprintPartition (springCode) {
+  return request({
+    url: api.sprintPartition + '?sprintCode=' + springCode,
     method: 'get'
   })
 }
@@ -162,9 +173,9 @@ export function getBranchlist (appid) {
   })
 }
 
-export function getAppBranch (relid, appcode) {
+export function getAppBranch (relid, appcode, appPartition) {
   return request({
-    url: api.appbranch + '?relid=' + relid + '&appcode=' + appcode,
+    url: api.appbranch + '?relid=' + relid + '&appcode=' + appcode + '&appPartition=' + appPartition,
     method: 'get'
   })
 }
@@ -177,8 +188,8 @@ export function saveAppBranch (parameter) {
   })
 }
 
-export function excuteTask (id, sprintId, relid, appcode) {
-  let url = api.task + '?appcode=' + appcode + '&relid=' + relid + '&sprintId=' + sprintId
+export function excuteTask (id, sprintId, relid, appcode, appPartition) {
+  let url = api.task + '?appcode=' + appcode + '&relid=' + relid + '&sprintId=' + sprintId + '&appPartition=' + appPartition
   if (id) {
     url = url + '&id=' + id
   }

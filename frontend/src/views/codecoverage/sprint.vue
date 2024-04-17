@@ -7,6 +7,12 @@
     <a-card :bordered="false" class="ant-pro-components-tag-select">
       <a-form layout="inline">
         <a-row :gutter="1">
+          <a-menu v-model="current" mode="horizontal" style="margin-bottom: 10px" @select="menuClick">
+            <a-menu-item key="dev">dev分区</a-menu-item>
+            <a-menu-item key="test">test分区</a-menu-item>
+          </a-menu>
+        </a-row>
+        <a-row :gutter="1">
           <a-col :md="7" :sm="5">
             <a-form-item label="应用/业务中台名称">
               <a-input v-model="code" placeholder=""/>
@@ -64,7 +70,7 @@
                 </a-menu>
               </a-dropdown> -->
             </template>
-            <div style="height: 80px;">
+            <div style="height: 80px; overflow-y: hidden;">
               <card-info
                 active-user="100"
                 new-user="999"
@@ -91,7 +97,15 @@ import { Modal } from 'ant-design-vue'
 // import TaskForm from '@/views/list/modules/TaskForm.vue'
 import BranchInfo from './components/BranchInfo.vue'
 import StepDetail from './components/StepDetail.vue'
-import { getCompareSprint, getSprintRels, getAppBranch, excuteTask, excuteAllTask } from '@/api/manage'
+import {
+  getCompareSprint,
+  getSprintRels,
+  getAppBranch,
+  excuteTask,
+  excuteAllTask
+  // saveSprint,
+  // getSprintPartition
+} from '@/api/manage'
 
 const TagSelectOption = TagSelect.Option
 const AvatarListItem = AvatarList.Item
@@ -115,7 +129,10 @@ export default {
       form: this.$form.createForm(this),
       loading: false,
       type: '',
-      code: ''
+      code: '',
+      current: ['dev'],
+      nowPartition: '',
+      sprintData: []
     }
   },
   filters: {
@@ -129,19 +146,46 @@ export default {
   mounted () {
     getCompareSprint().then(res => {
       if (res.result) {
-        this.sprintCode = res.result.sprintCode
-        this.sprintId = res.result.id
+        this.sprintData = res.result
+        console.log('sprintData', this.sprintData)
+        this.sprintCode = res.result[0].sprintCode
+        this.sprintId = res.result[0].id
+        this.nowPartition = res.result[0].appPartition
+        this.current = [ this.nowPartition ]
+        console.log(this.nowPartition, this.sprintId, this.sprintCode)
         this.getList()
+        // getSprintPartition(this.sprintCode).then(res => {
+        //   if (res.result) {
+        //     this.sprintData = res.result
+        //     console.log(this.sprintData)
+        //   }
+        // })
       }
     })
   },
   methods: {
+    menuClick (item) {
+      console.log(this.sprintData, item.key)
+      this.sprintId = ''
+      this.sprintCode = ''
+      this.nowPartition = ''
+      for (const sprint in this.sprintData) {
+        if (this.sprintData[sprint].appPartition === item.key) {
+          this.sprintId = this.sprintData[sprint].id
+          this.sprintCode = this.sprintData[sprint].sprintCode
+          this.nowPartition = this.sprintData[sprint].appPartition
+        }
+      }
+      this.getList()
+    },
     handleChange (record) {
+      console.log(record)
       const relid = record.id
       const sprintId = record.sprintId
       const appcode = record.appCode
+      const appPartition = record.appPartition
 
-      getAppBranch(relid, appcode).then(res => {
+      getAppBranch(relid, appcode, appPartition).then(res => {
         const rtn = res.result
         // 无回参或回参不含ID或回参的compareTpye为all
         if (!rtn || (rtn && !rtn.id) || (rtn && rtn.compareTpye === 'all')) {
@@ -154,7 +198,7 @@ export default {
               cancelText: '取消',
               onOk () {
                 // that.exceteTask(null, sprintId, relid, appcode)
-                excuteTask(null, sprintId, relid, appcode).then(res => {
+                excuteTask(null, sprintId, relid, appcode, appPartition).then(res => {
                   that.$message.info('任务开始执行，请稍后查看执行进度')
                 })
               },
@@ -166,18 +210,18 @@ export default {
           if (rtn.status === '2') {
             this.$message.info('当前应用正在执行中，请稍等')
           } else {
-            this.exceteTask(rtn.id, sprintId, relid, appcode)
+            this.exceteTask(rtn.id, sprintId, relid, appcode, appPartition)
           }
         }
       })
     },
-    exceteTask (id, sprintId, relid, appcode) {
+    exceteTask (id, sprintId, relid, appcode, appPartition) {
       var that = this
       Modal.confirm({
         title: this.$t('请确认是否重新计算覆盖率'),
         content: this.$t('请确认是否重新计算覆盖率'),
         onOk: () => {
-          excuteTask(id, sprintId, relid, appcode).then(res => {
+          excuteTask(id, sprintId, relid, appcode, appPartition).then(res => {
             that.$message.info('任务开始执行，请稍后查看执行进度')
           })
         },
@@ -206,6 +250,7 @@ export default {
         })
     },
     edit (record) {
+      console.log(record)
       this.$dialog(BranchInfo,
         // component props
         {
@@ -233,7 +278,7 @@ export default {
       // })
       this.data = []
       this.loading = true
-      getSprintRels(this.sprintId).then(res => {
+      getSprintRels(this.sprintId, '', this.nowPartition).then(res => {
         this.oriData = res.result
         this.data = res.result
         this.loading = false

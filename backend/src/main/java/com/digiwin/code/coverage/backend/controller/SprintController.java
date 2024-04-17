@@ -67,6 +67,18 @@ public class SprintController {
         return ResponseResult.ok(pageRtn);
     }
 
+    @ApiOperation("获取冲刺分支列表")
+    @RequestMapping(value = "sprintListPartition",method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseResult getSprintListPartition(@RequestParam(value = "sprintCode",required = true) String springCode){
+        QueryWrapper<SprintPO> conds = new QueryWrapper<>();
+        if(springCode != null){
+            conds.lambda().eq(SprintPO::getSprintCode,springCode);
+        }
+        List<SprintPO> poList = sprintMapper.selectList(conds);
+        return ResponseResult.ok(poList);
+    }
+
     private String checkSpListParam(Integer size, Integer pageNum) {
         List<String> ls = new ArrayList<>();
         if(size==null){
@@ -91,10 +103,10 @@ public class SprintController {
         }
         Long isCompare = sprintPO.getIsCompare();
         if(isCompare!=null && isCompare.equals(1L)){
-            sprintMapper.updateCompare();
+            sprintMapper.updateCompare(sprintPO.getAppPartition());
         }
         sprintMapper.insert(sprintPO);
-        sprintAppRelMapper.insertAllApps(sprintPO.getId(), sprintPO.getSprintCode());
+        sprintAppRelMapper.insertAllApps(sprintPO.getId(), sprintPO.getSprintCode(), sprintPO.getAppPartition());
         return ResponseResult.ok();
     }
 
@@ -113,11 +125,12 @@ public class SprintController {
     @RequestMapping(value = "sprint/rels", method = RequestMethod.GET)
     @ResponseBody
     public ResponseResult getRelAppOnPage(@RequestParam(value = "sprintid", required = false) Long sprintId,
-                                          @RequestParam(value = "type", required = false) String type){
+                                          @RequestParam(value = "partition", required = false) String partition,
+                                          @RequestParam(value = "type",required = false) String type){
         if(sprintId==null){
             return ResponseResult.fail("入参sprintid不可为空");
         }
-        List<Map<String, Object>> ls = sprintAppRelMapper.getListBySprintId(sprintId, type);
+        List<Map<String, Object>> ls = sprintAppRelMapper.getListBySprintId(sprintId, type,partition);
 //        QueryWrapper<SprintAppRelPO> conds = new QueryWrapper<>();
 //        conds.lambda().eq(SprintAppRelPO::getSprintId, sprintId);
 //        List<SprintAppRelPO> ls = sprintAppRelMapper.selectList(conds);
@@ -131,6 +144,7 @@ public class SprintController {
                 po.setAppId((Long)map.get("app_id"));
                 po.setAppCode((String)map.get("app_code"));
                 po.setAllCount((String)map.get("all_count"));
+                po.setAppPartition((String)map.get("app_partition"));
                 po.setAllFilePath((String)map.get("all_file_path"));
                 po.setAllFileDate((Date)map.get("all_file_date"));
                 po.setDiffCount((String)map.get("diff_count"));
@@ -185,11 +199,13 @@ public class SprintController {
         }
         Long isCompare = sprintPO.getIsCompare();
         if(isCompare!=null && isCompare.equals(1L)){
-            sprintMapper.updateCompare();
+            sprintMapper.updateCompare(sprintPO.getAppPartition());
         }
-        sprintMapper.updateById(sprintPO);
+        sprintMapper.updateIsCompareById(sprintPO.getId());
         QueryWrapper<SprintAppRelPO> conds = new QueryWrapper<>();
-        conds.lambda().eq(SprintAppRelPO::getSprintId, sprintPO.getId());
+        // 添加分区查询条件
+        conds.lambda().eq(SprintAppRelPO::getSprintId, sprintPO.getId())
+                .eq(SprintAppRelPO::getAppPartition,sprintPO.getAppPartition());
         List<SprintAppRelPO> rels = sprintAppRelMapper.selectList(conds);
         Map<String, SprintAppRelPO> relMap = new HashMap<>();
         for(SprintAppRelPO po : rels){
@@ -211,6 +227,8 @@ public class SprintController {
                 relPO.setAppCode(po.getAppCode());
                 relPO.setSprintId(sprintPO.getId());
                 relPO.setSprintCode(sprintPO.getSprintCode());
+                // 添加对应的分区
+                relPO.setAppPartition(sprintPO.getAppPartition());
                 sprintAppRelMapper.insert(relPO);
             }
         }
@@ -236,17 +254,20 @@ public class SprintController {
         conds.lambda().and( wq -> {
             wq.or().eq(SprintPO::getIsCompare, 1L);
         });
-        SprintPO po = sprintMapper.selectOne(conds);
-        return ResponseResult.ok(po);
+        // 可同时拥有一个dev和test在使用
+        List<SprintPO> poList = sprintMapper.selectList(conds);
+        // SprintPO po = sprintMapper.selectOne(conds);
+        return ResponseResult.ok(poList);
     }
 
     @ApiOperation("获取应用分支")
     @RequestMapping(value = "/appbranch", method = RequestMethod.GET)
     @ResponseBody
     public ResponseResult getAppBranch(@RequestParam(value = "relid", required = false) Long relid,
-                                       @RequestParam(value = "appcode", required = false) String appCode){
+                                       @RequestParam(value = "appcode", required = false) String appCode,
+                                       @RequestParam(value = "appPartition",required = false) String appPartition){
         QueryWrapper<AppBranchPO> conds = new QueryWrapper<>();
-        conds.lambda().eq(AppBranchPO::getRelId, relid).eq(AppBranchPO::getAppCode, appCode);
+        conds.lambda().eq(AppBranchPO::getRelId, relid).eq(AppBranchPO::getAppCode, appCode).eq(AppBranchPO::getAppPartition,appPartition);
         AppBranchPO po = appBranchMapper.selectOne(conds);
         return ResponseResult.ok(po);
     }

@@ -69,7 +69,8 @@ public class TaskController {
             Long id = (Long)map.get("id");
             Long relId = (Long)map.get("rel_id");
             String appcode = (String)map.get("app_code");
-            excuteTask(id, relId, sprintId, appcode);
+            String appPartition = (String)map.get("app_partition");
+            excuteTask(id, relId, sprintId, appcode, appPartition);
         }
         return ResponseResult.ok();
     }
@@ -80,7 +81,8 @@ public class TaskController {
     public ResponseResult excuteTask(@RequestParam(value = "id", required = false) Long id,
                                      @RequestParam(value = "relid", required = true) Long relid,
                                      @RequestParam(value = "sprintId", required = true) Long sprintId,
-                                     @RequestParam(value = "appcode", required = true) String appcode){
+                                     @RequestParam(value = "appcode", required = true) String appcode,
+                                     @RequestParam(value = "appPartition",required = true) String appPartition){
         AppBranchPO poT = null;
         Date downDataFileDate = null;
         if(id == null){
@@ -89,6 +91,7 @@ public class TaskController {
             poT.setSprintId(sprintId);
             poT.setCompareType("all");
             poT.setAppCode(appcode);
+            poT.setAppPartition(appPartition);
             poT.setStatus("2");
             appBranchMapper.insert(poT);
             id = poT.getId();
@@ -118,7 +121,7 @@ public class TaskController {
                     appBranchMapper.resetDataFileDate(idT);
                     LoggerUtil.info(log, String.format("应用%s，下载exec文件，开始", appcode));
                     // 下载文件
-                    ResponseResult downRes = downLoadFileController.downLoadCodeAndCompile(appcode, relPo.getSprintCode());
+                    ResponseResult downRes = downLoadFileController.downLoadCodeAndCompile(appcode, relPo.getSprintCode(),relPo.getAppPartition());
 
                     filePath = Objects.toString(downRes.getMessage(), "");
                     po.setDataFilePath(filePath);
@@ -140,7 +143,12 @@ public class TaskController {
                 if(reportMap.containsKey("tfootThirdTdContent")){
                     po.setAllCount(Objects.toString(reportMap.get("tfootThirdTdContent")));
                 }
-                String reportBasePath = customizeConfig.getReportDir();
+                String reportBasePath = null;
+                if(po.getAppPartition().equals("test")){
+                    reportBasePath = customizeConfig.getReportTestDir();
+                }else {
+                    reportBasePath = customizeConfig.getReportDir();
+                }
                 allReportPath = allReportPath.replace(reportBasePath, "").replace("\\", "/");
                 LoggerUtil.info(log, String.format("应用%s，生成全量报告，保存路径为%s，结束", appcode, allReportPath));
                 po.setAllFilePath(allReportPath);

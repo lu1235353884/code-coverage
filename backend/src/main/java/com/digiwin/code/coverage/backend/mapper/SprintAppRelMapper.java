@@ -14,22 +14,26 @@ import java.util.Map;
 
 @Mapper
 public interface SprintAppRelMapper extends MPJBaseMapper<SprintAppRelPO> {
-    @Insert("insert into sprint_app_rel(sprint_id, sprint_code, app_id, app_code, app_owner) " +
-            "select ${sprintid}, '${sprintcode}', id, app_code, owner from app")
+    @Insert("insert into sprint_app_rel(sprint_id, sprint_code, app_id, app_code, app_owner,app_partition) " +
+            "select ${sprintid}, '${sprintcode}', id, app_code, owner, '${appPartition}' from app")
     int insertAllApps(@Param("sprintid")Long sprintid,
-                      @Param("sprintcode")String sprintcode);
+                      @Param("sprintcode")String sprintcode,
+                      @Param("appPartition")String appPartition);
 
     @Select({"<script>",
             "select T1.*, T2.compare_type, T2.all_count, T2.all_file_path, T2.all_file_date, T2.diff_count, T2.diff_file_path, T2.diff_file_date " +
             "from sprint_app_rel AS T1 " +
-            "         left join app_branch AS T2 ON T1.id = T2.rel_id and T1.app_code = T2.app_code " +
+            "         left join app_branch AS T2 ON T1.id = T2.rel_id and T1.app_code = T2.app_code and T1.app_partition = T2.app_partition " +
             "where T1.sprint_id = #{sprintid} "+
             "<when test='type != null'>"+
-            "and T1.app_owner = #{type} "+
+            "and T1.app_owner = #{type} " +
+            "</when>"+
+            "<when test='appPartition != null'>"+
+            "and T1.app_partition = #{appPartition} "+
             "</when>"+
             " order by T1.app_code",
             "</script>"})
-    List<Map<String, Object>> getListBySprintId(@Param("sprintid")Long sprintid, @Param("type")String type);
+    List<Map<String, Object>> getListBySprintId(@Param("sprintid")Long sprintid, @Param("type")String type,@Param("appPartition") String partition);
 
     @Select("select T2.id, T1.id AS rel_id, T1.sprint_id, T1.app_code " +
             "from sprint_app_rel AS T1 " +

@@ -20,6 +20,8 @@ public class SprintAppRelPO {
     private String sprintCode;
     private Long appId;
     private String appCode;
+    // 应用分区
+    private String appPartition;
 
     @TableField(exist = false)
     private String allCount;

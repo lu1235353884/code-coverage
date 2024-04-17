@@ -34,17 +34,18 @@ import java.util.Map;
  * @Description 下载exec文件（华为测试区）
  * @CreateDate 2024-02-01 10:20
  **/
-@Api(value = "/downLoadFile",tags = "下载exec文件（业务中台测试区）")
+@Api(value = "/downLoadFile", tags = "下载exec文件（业务中台测试区）")
 @RestController
 @RequestMapping("/downLoadFile")
 @Validated
 public class DownLoadFileController {
 
     @Autowired
-    private  CustomizeConfig customizeConfig;
+    private CustomizeConfig customizeConfig;
 
     private final ResourceLoader resourceLoader;
     private final ObjectMapper objectMapper;
+
     @Autowired
     public DownLoadFileController(ResourceLoader resourceLoader, ObjectMapper objectMapper) {
         this.resourceLoader = resourceLoader;
@@ -55,10 +56,11 @@ public class DownLoadFileController {
     @RequestMapping(value = "file", method = RequestMethod.GET)
     @ResponseBody
     public ResponseResult downLoadCodeAndCompile(@ApiParam(required = true, name = "appId", value = "appId")
-                                                     @NotEmpty
-                                                     @RequestParam(value = "appId")String appId,
-                                                 @RequestParam(value = "sprintCode")String sprintCode){
-        String appIdDownload = appId.toLowerCase().replace("-","");
+                                                 @NotEmpty
+                                                 @RequestParam(value = "appId") String appId,
+                                                 @RequestParam(value = "sprintCode") String sprintCode,
+                                                 @RequestParam(value = "appPartition") String appPartition) {
+        String appIdDownload = appId.toLowerCase().replace("-", "");
         String basePath = customizeConfig.getDownLoadPath() + "\\" + appId;
         String filePath = "";
         try {
@@ -67,15 +69,18 @@ public class DownLoadFileController {
             Resource resource = resourceLoader.getResource("classpath:download.json");
             String jsonStr = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
             // 使用ObjectMapper将JSON字符串转换为Java对象
-            Map jsonData = objectMapper.readValue(jsonStr, Map.class);
-            FileUtils.downloadFile(MessageFormat.format(MapUtils.getString(jsonData,appId.toLowerCase()),new String[]{appIdDownload, sprintCode, appIdDownload}), basePath);
-//            FileUtils.downloadFile(MessageFormat.format(customizeConfig.getDownLoadUrl(),new String[]{appIdDownload, sprintCode, appIdDownload}), basePath);
-            FileUtils.unzip(basePath+CodeCoverageConstant.TEMPFILE_NAME, basePath);
+            if ("dev".equals(appPartition)) {
+                Map jsonData = objectMapper.readValue(jsonStr, Map.class);
+                FileUtils.downloadFile(MessageFormat.format(MapUtils.getString(jsonData, appId.toLowerCase()), new String[]{appIdDownload, sprintCode, appIdDownload}), basePath);
+            } else if("test".equals(appPartition)) {
+                FileUtils.downloadFile(MessageFormat.format(customizeConfig.getDownLoadUrl(), new String[]{appIdDownload, sprintCode, appIdDownload}), basePath);
+            }
+            FileUtils.unzip(basePath + CodeCoverageConstant.TEMPFILE_NAME, basePath);
             File fm = new File(basePath);
-            if(fm.exists()){
+            if (fm.exists()) {
                 File[] fs = fm.listFiles();
-                for(File f : fs){
-                    if(f.getName().endsWith("exec")){
+                for (File f : fs) {
+                    if (f.getName().endsWith("exec")) {
                         filePath = f.getAbsolutePath();
                         break;
                     }
