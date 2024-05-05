@@ -1,0 +1,3 @@
+ALTER TABLE `coverage`.`app_branch` ADD COLUMN `app_partition` VARCHAR(20) DEFAULT 'dev' NULL COMMENT '应用所属分支 dev/test' AFTER `app_code`;
+ALTER TABLE `coverage`.`sprint` ADD COLUMN `app_partition` VARCHAR(20) DEFAULT 'dev' NULL COMMENT '应用分支 dev/test' AFTER `is_compare`;
+ALTER TABLE `coverage`.`sprint_app_rel` ADD COLUMN `app_partition` VARCHAR(20) DEFAULT 'dev' NULL COMMENT '应用所属分支 dev/test' AFTER `app_owner`;

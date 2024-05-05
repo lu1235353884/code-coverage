@@ -151,6 +151,7 @@ public class SprintController {
                 po.setDiffFilePath((String)map.get("diff_file_path"));
                 po.setDiffFileDate((Date)map.get("diff_file_date"));
                 po.setCompareType((String)map.get("compare_type"));
+                po.setSm((String)map.get("sm"));
                 rtn.add(po);
             }
         }

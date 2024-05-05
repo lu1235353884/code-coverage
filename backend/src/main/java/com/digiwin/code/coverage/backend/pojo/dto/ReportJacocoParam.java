@@ -62,4 +62,6 @@ public class ReportJacocoParam {
 
     private String sourceBranchName;
 
+    // 应用分区
+    private String appPartition;
 }

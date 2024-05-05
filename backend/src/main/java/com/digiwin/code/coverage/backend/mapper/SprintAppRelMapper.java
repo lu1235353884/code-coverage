@@ -21,9 +21,10 @@ public interface SprintAppRelMapper extends MPJBaseMapper<SprintAppRelPO> {
                       @Param("appPartition")String appPartition);
 
     @Select({"<script>",
-            "select T1.*, T2.compare_type, T2.all_count, T2.all_file_path, T2.all_file_date, T2.diff_count, T2.diff_file_path, T2.diff_file_date " +
+            "select T1.*, T2.compare_type, T2.all_count, T2.all_file_path, T2.all_file_date, T2.diff_count, T2.diff_file_path, T2.diff_file_date, T3.sm " +
             "from sprint_app_rel AS T1 " +
             "         left join app_branch AS T2 ON T1.id = T2.rel_id and T1.app_code = T2.app_code and T1.app_partition = T2.app_partition " +
+            "         left join app AS T3 ON T3.id = T1.app_id and T3.app_code = T1.app_code " +
             "where T1.sprint_id = #{sprintid} "+
             "<when test='type != null'>"+
             "and T1.app_owner = #{type} " +

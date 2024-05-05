@@ -1,0 +1,14 @@
+{
+  "bmd-basc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmdbasc001-bmdbasc001backend-pvc-610d40fc-170d-403a-8023-88d82e863688/dwlogs/{1}/bmdbasc001.exec",
+  "bmd-bmsc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmd-bmsc-001-bmd-bmsc-001backend-pvc-b610e75a-d112-4798-937a-8af397b59324/dwlogs/{1}/bmd-bmsc-001.exec",
+  "bmd-imsc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmd-imsc-001-bmd-imsc-001backend-pvc-0e6ba6be-f4de-4f8b-9501-6548307141f6/dwlogs/{1}/bmd-imsc-001.exec",
+  "bmd-irsc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmdirsc001-bmdirsc001backend-pvc-3dd64cc5-d2f5-4632-bf70-255d3f4f8142/dwlogs/{1}/bmdirsc001.exec",
+  "bmd-opsc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmd-opsc-001-bmd-opsc-001backend-pvc-bc6c6643-5950-4d05-844d-5ca8dd0f2cc1/dwlogs/{1}/bmd-opsc-001.exec",
+  "bmd-pisc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmdpisc001-bmdpisc001backend-pvc-7998dce7-c1e2-487f-9c38-e99918c2f22d/dwlogs/{1}/bmdpisc001.exec",
+  "bmd-posc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmdposc001-bmdposc001backend-pvc-d4210fe3-cdc1-446a-a6a0-c7b4e2622e11/dwlogs/{1}/bmdposc001.exec",
+  "bmd-ppsc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmd-ppsc-001-bmd-ppsc-001backend-pvc-1a8d2f59-ee3d-44d3-874d-1fcef5c394f4/dwlogs/{1}/bmd-ppsc-001.exec",
+  "bmd-psc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmdpsc-bmdpscbackend-pvc-9e274aa8-8c4e-4787-892a-a4bd3d9a3f6d/dwlogs/{1}/bmdpsc.exec",
+  "bmd-qmsc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmd-qmsc-001-bmd-qmsc-001backend-pvc-274732ef-db6b-4dc7-b41d-167b4fa42be5/dwlogs/{1}/bmd-qmsc-001.exec",
+  "bmd-sdsc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmdsdsc001-bmdsdsc001backend-pvc-5ff2cba7-8133-4c65-8d4f-93de0120e791/dwlogs/{1}/bmdsdsc001.exec",
+  "bmd-stsc": "https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/dev/bmd-stsc-001-bmd-stsc-001backend-pvc-53018d74-2e1d-43a2-b336-88277fe66fac/dwlogs/{1}/bmd-stsc-001.exec"
+}

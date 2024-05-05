@@ -137,6 +137,7 @@ public class TaskController {
                 downLoadCodeAndCompile(reportJacocoParamVO, po, appcode);
                 appBranchMapper.updateById(po);
 
+                reportJacocoParamVO.setAppPartition(po.getAppPartition());
                 LoggerUtil.info(log, String.format("应用%s，生成全量报告，开始", appcode));
                 String allReportPath = createReport(appcode, filePath, reportJacocoParamVO, "all");
                 Map<String, Object> reportMap = apiController.getResponseCount(allReportPath);
@@ -144,6 +145,7 @@ public class TaskController {
                     po.setAllCount(Objects.toString(reportMap.get("tfootThirdTdContent")));
                 }
                 String reportBasePath = null;
+                reportJacocoParamVO.setAppPartition(po.getAppPartition());
                 if(po.getAppPartition().equals("test")){
                     reportBasePath = customizeConfig.getReportTestDir();
                 }else {
@@ -159,17 +161,21 @@ public class TaskController {
                 appBranchMapper.updateById(po);
                 if(StringUtils.equals(po.getCompareType(), "branch")){
                     LoggerUtil.info(log, String.format("应用%s，生成增量报告，开始", appcode));
-                    String branchReportPath = createReport(appcode, filePath, reportJacocoParamVO, "branch");
-                    LoggerUtil.info(log, String.format("应用%s，生成增量报告，保存路径为%s，结束", appcode, branchReportPath));
-                    reportMap = apiController.getResponseCount(branchReportPath);
-                    if(reportMap.containsKey("tfootThirdTdContent")){
-                        po.setDiffCount(Objects.toString(reportMap.get("tfootThirdTdContent")));
+                    //无差异代码无对比报告
+                    if(StringUtils.isNotEmpty(reportJacocoParamVO.getDiffCodeFile())){
+                        String branchReportPath = createReport(appcode, filePath, reportJacocoParamVO, "branch");
+                        LoggerUtil.info(log, String.format("应用%s，生成增量报告，保存路径为%s，结束", appcode, branchReportPath));
+                        reportMap = apiController.getResponseCount(branchReportPath);
+                        if(reportMap.containsKey("tfootThirdTdContent")){
+                            po.setDiffCount(Objects.toString(reportMap.get("tfootThirdTdContent")));
+                        }
+                        branchReportPath = branchReportPath.replace(reportBasePath, "").replace("\\", "/");
+
+                        po.setDiffFilePath(branchReportPath);
+                        po.setDiffFileDate(new Date());
+                        po.setStatus("3");
+                        appBranchMapper.updateById(po);
                     }
-                    branchReportPath = branchReportPath.replace(reportBasePath, "").replace("\\", "/");
-                    po.setDiffFilePath(branchReportPath);
-                    po.setDiffFileDate(new Date());
-                    po.setStatus("3");
-                    appBranchMapper.updateById(po);
                 }
             } catch (Exception e) {
                 LoggerUtil.error(log, "执行失败", e);
@@ -192,6 +198,7 @@ public class TaskController {
             reportJacocoParamVOT.setSourceBranchName(reportJacocoParamVO.getSourceBranchName());
             reportJacocoParamVOT.setDiffCodeFile(reportJacocoParamVO.getDiffCodeFile());
         }
+        reportJacocoParamVOT.setAppPartition(reportJacocoParamVO.getAppPartition());
         // 生成报告
         ResponseResult reportRes = reportController.report(reportJacocoParamVOT);
         String reportPath = reportRes.getMessage();
@@ -224,7 +231,10 @@ public class TaskController {
             LoggerUtil.info(log, String.format("应用%s，生成比对文件，开始", appcode));
             ResponseResult diffRes = codeController.generateCodeDiffJsonFile(appcode, po.getSourceBranchName(), po.getTargetBranchName());
             diffPath = Objects.toString(diffRes.getMessage(), "");
-            reportJacocoParamVO.setDiffCodeFile(diffPath);
+
+            if(!"nodiff".equals(diffPath)){
+                reportJacocoParamVO.setDiffCodeFile(diffPath);
+            }
             LoggerUtil.info(log, String.format("应用%s，生成比对文件，保存路径为%s，结束", appcode, diffPath));
             po.setCompareDate(new Date());
         }

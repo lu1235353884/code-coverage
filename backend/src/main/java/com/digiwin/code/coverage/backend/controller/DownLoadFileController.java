@@ -62,6 +62,9 @@ public class DownLoadFileController {
                                                  @RequestParam(value = "appPartition") String appPartition) {
         String appIdDownload = appId.toLowerCase().replace("-", "");
         String basePath = customizeConfig.getDownLoadPath() + "\\" + appId;
+        if("test".equals(appPartition)){
+            basePath = customizeConfig.getDownLoadTestPath() + "\\" + appId;
+        }
         String filePath = "";
         try {
             FileUtils.restFileMkdirs(basePath);

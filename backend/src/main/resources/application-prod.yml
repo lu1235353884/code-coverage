@@ -7,6 +7,7 @@ git:
     base:
       dir: C:\jacocoNew\testCode
       reportDir: C:\jacocoNew\nginx-1.22.1\html
+      reportTestDir: C:\jacocoNew\nginx-1.22.1\html
   ssh:
     priKey: C:\Users\mylocl/.ssh/id_rsa.
 
@@ -23,6 +24,7 @@ jacoco:
     path: C:\jacocoNew
   download:
     path: C:\jacocoNew\exec_all\download
+    testpath: C:\jacocoNew\exec_all\download_test
     url: https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/test/{0}backend/test/dwlogs/{1}/{2}.exec
 
 

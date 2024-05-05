@@ -37,6 +37,8 @@ public class SprintAppRelPO {
     private Date diffFileDate;
     @TableField(exist = false)
     private String compareType;
+    @TableField(exist = false)
+    private String sm;
 
     public static SprintAppRelPO createRelPO(SprintAppRelPO rel, SprintPO sprintPO) {
         SprintAppRelPO relPO = new SprintAppRelPO();

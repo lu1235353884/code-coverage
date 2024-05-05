@@ -33,7 +33,8 @@ public class ReportJacocoParamVO {
      */
     private String diffCodeFile;
 
-
+    // 应用分区
+    private String appPartition;
 
     /**
      * appid

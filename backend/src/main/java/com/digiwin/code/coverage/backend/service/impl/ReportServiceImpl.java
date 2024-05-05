@@ -51,6 +51,9 @@ public class ReportServiceImpl implements ReportService {
         reportJacocoParam.setSourceDirectory(new ArrayList<String>());
         //根据是否有diff的入参来确认全量报告还是增量报告
         String reportPath = customizeConfig.getReportDir()+"/report_all/"+reportJacocoParam.getAppId()+(StringUtils.isEmpty(reportJacocoParam.getDiffCodeFile())?"":"-diff");
+        if("test".equals(reportJacocoParam.getAppPartition())){
+            reportPath = customizeConfig.getReportTestDir()+"/report_all_test/"+reportJacocoParam.getAppId()+(StringUtils.isEmpty(reportJacocoParam.getDiffCodeFile())?"":"-diff");
+        }
         FileUtils.restFileMkdirs(reportPath);
         reportJacocoParam.setReportDirectory(reportPath);
         reportJacocoParam.setReportName(reportJacocoParam.getAppId());

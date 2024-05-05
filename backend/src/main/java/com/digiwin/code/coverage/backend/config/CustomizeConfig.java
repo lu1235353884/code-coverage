@@ -92,6 +92,9 @@ public class CustomizeConfig {
     @Value(value = "${jacoco.download.path}")
     private String downLoadPath;
 
+    @Value(value = "${jacoco.download.testpath}")
+    private String downLoadTestPath;
+
     @Value(value = "${jacoco.download.url}")
     private String downLoadUrl;
 }
