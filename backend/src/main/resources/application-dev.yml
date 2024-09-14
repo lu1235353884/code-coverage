@@ -7,7 +7,7 @@ git:
     base:
       dir: D:\jacoco\testCode
       reportDir: D:\jacoco\report_all
-      reportTestDir: D:\jacoco\report_all\test
+      reportTestDir: D:\jacoco\report_all_test
   ssh:
     priKey: C:\Users\mylocl/.ssh/id_rsa.
 
@@ -24,6 +24,7 @@ jacoco:
     path: D:\jacoco\
   download:
     path: D:\jacoco\exec_all\download
+    testpath: D:\jacoco\exec_all\download_test
     url: https://bff-service.digiwincloud.com.cn/api/v1/nfs/file_manage?cloud=Huawei&file=/data/test/{0}backend/test/dwlogs/{1}/{2}.exec
 
 

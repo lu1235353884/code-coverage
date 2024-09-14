@@ -32,7 +32,7 @@ public interface SprintAppRelMapper extends MPJBaseMapper<SprintAppRelPO> {
             "<when test='appPartition != null'>"+
             "and T1.app_partition = #{appPartition} "+
             "</when>"+
-            " order by T1.app_code",
+            " order by T2.diff_count,T1.app_code desc",
             "</script>"})
     List<Map<String, Object>> getListBySprintId(@Param("sprintid")Long sprintid, @Param("type")String type,@Param("appPartition") String partition);
 

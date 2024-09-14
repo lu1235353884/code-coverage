@@ -120,7 +120,7 @@ public class CodeController {
                                                     @RequestParam(value = "compareBranch") String compareBranch){
 
 
-        List<DiffClassInfoResult> diffCodeList = codeService.codeDiffInfo(CodeDiffParam.builder().appId(appId.toLowerCase()).baseBranch(baseBranch).compareBrach(compareBranch).codeManageTypeEnum(CodeManageTypeEnum.GIT).build()).getDiffClasses();
+        List<DiffClassInfoResult> diffCodeList = codeService.codeDiffInfo(CodeDiffParam.builder().appId(appId.toLowerCase()).baseBranch(compareBranch).compareBrach(baseBranch).codeManageTypeEnum(CodeManageTypeEnum.GIT).build()).getDiffClasses();
         List<CodeDiffResultVO> list = OrikaMapperUtil.mapList(diffCodeList, DiffClassInfoResult.class, CodeDiffResultVO.class);
 
         if(CollectionUtils.isEmpty(list)){

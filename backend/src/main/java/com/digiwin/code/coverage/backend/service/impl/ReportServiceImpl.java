@@ -68,8 +68,16 @@ public class ReportServiceImpl implements ReportService {
 
         if(!CollectionUtils.isEmpty(moduleList)){
             moduleList.forEach(m->{
-                reportJacocoParam.getClassesDirectory().add(appPath+m+"/"+reportJacocoParam.getAppId()+"-service-impl-"+m+"/target/classes");
-                reportJacocoParam.getSourceDirectory().add(appPath+m+"/"+reportJacocoParam.getAppId()+"-service-impl-"+m+"/src/main/java");
+                if("bm-psc".equals(reportJacocoParam.getAppId())){
+                    reportJacocoParam.getClassesDirectory().add(appPath+m+"/"+"app"+"-service-impl-"+m+"/target/classes");
+                    reportJacocoParam.getSourceDirectory().add(appPath+m+"/"+"app"+"-service-impl-"+m+"/src/main/java");
+                }else if("bm-wrsc".equals(reportJacocoParam.getAppId())){
+                    reportJacocoParam.getClassesDirectory().add(appPath+m+"/"+"bm-wrsc-backend"+"-service-impl-"+m+"/target/classes");
+                    reportJacocoParam.getSourceDirectory().add(appPath+m+"/"+"bm-wrsc-backend"+"-service-impl-"+m+"/src/main/java");
+                }else{
+                    reportJacocoParam.getClassesDirectory().add(appPath+m+"/"+reportJacocoParam.getAppId()+"-service-impl-"+m+"/target/classes");
+                    reportJacocoParam.getSourceDirectory().add(appPath+m+"/"+reportJacocoParam.getAppId()+"-service-impl-"+m+"/src/main/java");
+                }
             });
             //解析exec
             ExecFileLoader execFileLoader = loadExecutionData(reportJacocoParam.getExecutionDataFile());
